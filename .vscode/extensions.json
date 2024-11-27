@@ -1,0 +1,30 @@
+{
+  "recommendations": [
+    "github.copilot",
+    "github.copilot-chat",
+    "dbaeumer.vscode-eslint",
+    "herrmannplatz.npm-dependency-links",
+    "mskelton.npm-outdated",
+    "christian-kohler.npm-intellisense",
+    "fabiospampinato.vscode-open-in-npm",
+    "usernamehw.errorlens",
+    "felipecaputo.git-project-manager",
+    "esbenp.prettier-vscode",
+    "richie5um2.vscode-sort-json",
+    "dsznajder.es7-react-js-snippets",
+    "formulahendry.auto-rename-tag",
+    "nyxb.vscode-styled-colors",
+    "pkief.material-icon-theme",
+    "ibm.output-colorizer",
+    "markosth09.color-picker",
+    "cezaraugusto.vscode-chrome-extesion-manifest-json-schema",
+    "meganrogge.template-string-converter",
+    "dbaeumer.vscode-eslint",
+    "naumovs.color-highlight",
+    "antiantisepticeye.vscode-color-picker",
+    "steoates.autoimport",
+    "sibiraj-s.vscode-scss-formatter",
+    "mrmlnc.vscode-scss",
+    "yoavbls.pretty-ts-errors"
+  ]
+}

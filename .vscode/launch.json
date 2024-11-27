@@ -1,0 +1,13 @@
+{
+  "configurations": [
+    {
+      "name": "debug",
+      "type": "node",
+      "request": "attach",
+      "sourceMaps": true,
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMapRenames": true,
+      "preLaunchTask": "debug"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Appended Text Google Search",
+  "version": "1.0",
+  "description": "Search for selected text in a new tab",
+  "background": {
+    "service_worker": "js/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["js/content-script.js"]
+    }
+  ],
+  "options_page": "options.html",
+  "permissions": ["contextMenus", "scripting", "storage", "tabs", "activeTab"],
+  "host_permissions": ["https://*/*", "http://*/*"],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["assets/*"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
