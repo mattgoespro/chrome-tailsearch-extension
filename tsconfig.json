@@ -3,13 +3,19 @@
   "exclude": ["node_modules"],
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es2020",
+    "jsx": "react",
     "moduleResolution": "node",
     "baseUrl": ".",
+    "lib": ["dom", "es2022"],
+    "outDir": "dist",
+    "target": "es6",
+    "types": ["node", "react", "chrome"],
+    "paths": {
+      "@shared/*": ["src/shared/*"]
+    },
+    "allowJs": true,
+    "strict": false,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "lib": ["es2020", "dom", "dom.iterable"],
-    "types": ["node", "chrome"],
-    "noEmit": true,
-  },
+    "skipLibCheck": true
+  }
 }

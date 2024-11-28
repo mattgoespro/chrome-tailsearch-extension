@@ -27,6 +27,7 @@
   "eslint.format.enable": false,
   "eslint.probe": ["javascript", "typescript", "typescriptreact", "html"],
   "eslint.run": "onType",
+  "eslint.useFlatConfig": true,
   "eslint.validate": ["javascript", "typescript", "typescriptreact", "html"],
   "explorer.confirmDragAndDrop": false,
   "files.exclude": {

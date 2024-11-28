@@ -4,28 +4,28 @@ import CopyWebpackPlugin from "copy-webpack-plugin";
 import FaviconsWebpackPlugin from "favicons-webpack-plugin";
 import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin";
 import HtmlWebpackPlugin from "html-webpack-plugin";
-import TerserWebpackPlugin from "terser-webpack-plugin";
 import TsConfigPathsWebpackPlugin from "tsconfig-paths-webpack-plugin";
 import { Configuration, EnvironmentPlugin } from "webpack";
 import { ExtensionReloader } from "webpack-ext-reloader";
+import MiniCssExtractWebpackPlugin from "mini-css-extract-plugin";
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ExtensionReloaderWebpackPlugin: typeof ExtensionReloader = require("webpack-ext-reloader");
-
 export default {
   target: "web",
   stats: "errors-warnings",
   devtool: "cheap-module-source-map",
   entry: {
-    options: "src/renderer/options.ts",
-    background: "src/runtime/background.ts",
-    "content-script": "src/content-script/content-script.ts"
+    background: path.join(__dirname, "src", "runtime", "background.ts"),
+    "content-script": path.join(__dirname, "src", "content-script", "content-script.ts"),
+    "settings-page": path.join(__dirname, "src", "renderer", "index.tsx")
   },
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "js/[name].js"
   },
   resolve: {
-    extensions: [".ts", ".js"],
+    extensions: [".ts", ".tsx", ".js"],
     alias: {
       "webextension-polyfill-ts": path.resolve(
         path.join(__dirname, "node_modules", "webextension-polyfill-ts")
@@ -36,28 +36,51 @@ export default {
   module: {
     rules: [
       {
-        test: /\.css$/,
-        use: ["style-loader", "css-loader"]
+        test: /\.scss$/,
+        use: [
+          MiniCssExtractWebpackPlugin.loader,
+          {
+            loader: "css-loader",
+            options: {
+              modules: {
+                localIdentName: "[name]__[local]___[hash:base64:5]"
+              }
+            }
+          },
+          {
+            loader: "sass-loader",
+            options: {
+              implementation: require("sass"),
+              sassOptions: {
+                includePaths: [path.resolve(__dirname, "src/webview/styles")]
+              }
+            }
+          },
+          "postcss-loader"
+        ],
+        exclude: /node_modules/
       },
       {
-        test: /\.(js|ts)x?$/,
+        test: /\.css$/,
+        use: [
+          MiniCssExtractWebpackPlugin.loader,
+          {
+            loader: "css-loader",
+            options: {
+              modules: {
+                localIdentName: "[name]__[local]___[hash:base64:5]"
+              }
+            }
+          },
+          "postcss-loader"
+        ],
+        exclude: /node_modules/
+      },
+      {
+        test: /\.[tj]sx?$/,
         loader: "babel-loader",
         exclude: /node_modules/
       }
-    ]
-  },
-  optimization: {
-    minimize: true,
-    minimizer: [
-      new TerserWebpackPlugin({
-        parallel: true,
-        terserOptions: {
-          format: {
-            comments: false
-          }
-        },
-        extractComments: false
-      })
     ]
   },
   plugins: [
@@ -67,11 +90,14 @@ export default {
     new CleanWebpackPlugin({
       verbose: true
     }),
+    new MiniCssExtractWebpackPlugin({
+      filename: "css/[name].css"
+    }),
     new HtmlWebpackPlugin({
       filename: "options.html",
-      template: path.join(__dirname, "src", "renderer", "options.html"),
+      template: path.join(__dirname, "public", "settings-page.html"),
       inject: "body",
-      chunks: ["options"],
+      chunks: ["settings-page"],
       hash: false
     }),
     new ForkTsCheckerWebpackPlugin({
@@ -80,7 +106,7 @@ export default {
     new CopyWebpackPlugin({
       patterns: [
         {
-          from: path.join(__dirname, "src", "manifest.json"),
+          from: path.join(__dirname, "public", "manifest.json"),
           to: path.join(__dirname, "dist"),
           transform: (content: Buffer) => {
             const manifest = JSON.parse(content.toString());
@@ -108,7 +134,7 @@ export default {
     new ExtensionReloaderWebpackPlugin({
       port: 9090,
       reloadPage: true,
-      manifest: path.join(__dirname, "src", "manifest.json"),
+      manifest: path.join(__dirname, "public", "manifest.json"),
       entries: {
         background: "background",
         manifest: "manifest",
