@@ -1,15 +1,19 @@
 import { createRoot } from "react-dom/client";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider, QueryOptions } from "react-query";
 import { SettingsPage } from "./settings-page/settings-page";
 import React from "react";
-import { AppendTextStorageKey } from "../shared/storage";
+import { AppendTextStorage, getStorage } from "../shared/storage";
 
-const root = document.getElementById("root");
+(async () => {
+  const root = document.getElementById("root");
 
-chrome.storage.sync.get(AppendTextStorageKey).then((initialData) => {
+  const initialData = await getStorage();
+  const queryOptions: QueryOptions<AppendTextStorage> = {
+    initialData
+  };
   const client = new QueryClient({
     defaultOptions: {
-      queries: { staleTime: 1000, initialData }
+      queries: queryOptions
     }
   });
 
@@ -20,4 +24,4 @@ chrome.storage.sync.get(AppendTextStorageKey).then((initialData) => {
       <SettingsPage commPort={port} />
     </QueryClientProvider>
   );
-});
+})();

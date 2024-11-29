@@ -8,6 +8,7 @@ document.addEventListener("mouseup", () => {
   }
 
   port.postMessage({
-    selectedText
+    type: "text-selected",
+    selectedText: selectedText
   });
 });

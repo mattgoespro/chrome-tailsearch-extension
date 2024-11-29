@@ -6,14 +6,36 @@
   "background": {
     "service_worker": "js/background.js"
   },
+  "action": {
+    "default_title": "Search Google with appended text",
+    "default_icon": {
+      "16": "assets/favicon-16x16.png",
+      "32": "assets/favicon-32x32.png",
+      "48": "assets/favicon-48x48.png"
+    }
+  },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
       "js": ["js/content-script.js"]
     }
   ],
+  "icons": {
+    "16": "assets/favicon-16x16.png",
+    "32": "assets/favicon-32x32.png",
+    "48": "assets/favicon-48x48.png"
+  },
+  "commands": {
+    "default_title": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+S",
+        "mac": "Command+Shift+S"
+      },
+      "description": "Search Google with the text appended to the selected text."
+    }
+  },
   "options_page": "options.html",
-  "permissions": ["contextMenus", "scripting", "storage", "tabs", "activeTab"],
+  "permissions": ["contextMenus", "scripting", "storage", "tabs", "activeTab", "commands"],
   "host_permissions": ["https://*/*", "http://*/*"],
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self';"

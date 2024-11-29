@@ -27,12 +27,12 @@
   "eslint.format.enable": false,
   "eslint.probe": ["javascript", "typescript", "typescriptreact", "html"],
   "eslint.run": "onType",
-  "eslint.useFlatConfig": true,
   "eslint.validate": ["javascript", "typescript", "typescriptreact", "html"],
   "explorer.confirmDragAndDrop": false,
   "files.exclude": {
     ".git": true,
-    "node_modules": true
+    "node_modules": true,
+    "package-lock.json": true
   },
   "html.format.enable": false,
   "javascript.format.enable": false,
@@ -51,13 +51,8 @@
   "scss.validate": false,
   "scssFormatter.printWidth": 120,
   "search.exclude": {
-    "**/bundle-analyzer/**": true,
-    "**/dist/**": true,
-    "**/node_modules/**": true,
-    ".git": true
+    ".vscode": true
   },
-  "stylelint.enable": true,
-  "stylelint.validate": ["css", "scss"],
   "terminal.integrated.defaultProfile.windows": "bash-node",
   "terminal.integrated.profiles.windows": {
     "bash-node": {
@@ -77,6 +72,5 @@
   "typescript.tsc.autoDetect": "off",
   "typescript.tsdk": "node_modules\\typescript\\lib",
   "typescript.updateImportsOnFileMove.enabled": "always",
-  // "vscode-color-picker.languages": ["javascript", "typescript", "css", "scss"],
   "workbench.iconTheme": "material-icon-theme"
 }

@@ -2,29 +2,39 @@ import React from "react";
 import { useRef } from "react";
 import { useQuery } from "react-query";
 import * as styles from "./settings-page.module.scss";
-import { AppendTextStorage, AppendTextStorageKey } from "../../shared/storage";
+import { AppendTextStorageKey, getStorage, updateStorage } from "../../shared/storage";
 
 type SettingsPageProps = {
   commPort: chrome.runtime.Port;
 };
 
-export function SettingsPage(props: SettingsPageProps) {
-  const { data, isLoading, error } = useQuery<string, Error>(AppendTextStorageKey, {
+export function SettingsPage({ commPort }: SettingsPageProps) {
+  const {
+    data: _data,
+    isLoading,
+    error
+  } = useQuery<string, Error>(AppendTextStorageKey, {
     queryFn: async () => {
-      const { appendText } = await chrome.storage.sync.get<AppendTextStorage>(AppendTextStorageKey);
+      const { appendText } = await getStorage();
       return appendText;
+    },
+    onSuccess(data) {
+      if (data != null) {
+        inputRef.current.value = data;
+      }
     }
   });
+
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleOnSave = () => {
+  const handleOnSave = async () => {
     const newValue = (inputRef.current.value ?? "").trim();
+    const appendText = newValue.length > 0 ? newValue : null;
 
-    if (newValue.length > 0) {
-      chrome.storage.sync.set<AppendTextStorage>({ appendText: newValue }, () => {
-        alert("Saved settings.");
-      });
-    }
+    await updateStorage({ appendText });
+    alert("Saved settings.");
+
+    commPort.postMessage({ type: "update-context-menu" });
   };
 
   return (
@@ -37,8 +47,7 @@ export function SettingsPage(props: SettingsPageProps) {
             id="word-input"
             className={styles["word-input"]}
             ref={inputRef}
-            placeholder={isLoading ? "Loading..." : undefined}
-            defaultValue={data}
+            placeholder={isLoading ? "Loading..." : "Set the text to append to the selection..."}
           />
           <button className={styles["save-button"]} disabled={isLoading} onClick={handleOnSave}>
             Save

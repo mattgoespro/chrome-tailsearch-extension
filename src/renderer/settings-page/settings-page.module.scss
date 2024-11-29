@@ -18,10 +18,11 @@
     justify-content: center;
     align-items: center;
     width: 20rem;
+    padding: 0.75rem;
     font-family: Roboto, monospace;
     font-weight: 400;
-    color: #4b4b4b;
-    padding: 0.75rem;
+    font-size: 1.4em;
+    color: #f0f0f0;
     background-color: #101010;
     border: 1px solid #4b4b4b;
     border-radius: 8px;
@@ -29,6 +30,7 @@
     &:focus {
         outline: none;
         border-color: #ff7c30;
+        transition: border-color 50ms ease-in;
     }
 }
 
@@ -40,7 +42,7 @@
 label {
     font-family: Quicksand, monospace;
     font-weight: 400;
-    font-size: 1.125em;
+    font-size: 1.3em;
     color: #b4b4b4;
     margin-bottom: 0.5rem;
 }
@@ -54,7 +56,9 @@ label {
     font-family: Roboto, monospace;
     font-weight: 400;
     color: #f0f0f0;
-    background-color: #1b588b;
+    font-size: 1.125em;
+    background-color: #6d00d5;
+    text-transform: uppercase;
     border: none;
     border-radius: 8px;
     cursor: pointer;
