@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { useQuery } from "react-query";
 import * as styles from "./settings-page.module.scss";
 import { AppendTextStorageKey, getStorage, updateStorage } from "../../shared/storage";
+import { RuntimePortMessageEvent } from "../../shared/message-event";
 
 type SettingsPageProps = {
   commPort: chrome.runtime.Port;
@@ -34,7 +35,10 @@ export function SettingsPage({ commPort }: SettingsPageProps) {
     await updateStorage({ appendText });
     alert("Saved settings.");
 
-    commPort.postMessage({ type: "update-context-menu" });
+    const msg: RuntimePortMessageEvent<"update-context-menu"> = {
+      type: "update-context-menu"
+    };
+    commPort.postMessage(msg);
   };
 
   return (
@@ -42,16 +46,22 @@ export function SettingsPage({ commPort }: SettingsPageProps) {
       <div className={styles["heading"]}>Options</div>
       {(!error && (
         <div className={styles["settings-form"]}>
-          <label htmlFor="word-input">Append Term</label>
-          <input
-            id="word-input"
-            className={styles["word-input"]}
-            ref={inputRef}
-            placeholder={isLoading ? "Loading..." : "Set the text to append to the selection..."}
-          />
-          <button className={styles["save-button"]} disabled={isLoading} onClick={handleOnSave}>
-            Save
-          </button>
+          <label htmlFor="word-input" className={styles["label"]}>
+            Append Term
+          </label>
+          <form>
+            <input
+              id="word-input"
+              className={styles["word-input"]}
+              ref={inputRef}
+              disabled={isLoading}
+              placeholder={isLoading ? "Loading..." : "Set the text to append to the selection..."}
+            />
+            <button className={styles["save-button"]} disabled={isLoading} onClick={handleOnSave}>
+              Save
+            </button>
+            <input type="submit" hidden onSubmit={handleOnSave} />
+          </form>
         </div>
       )) || <span color="red">Error: {error.message}</span>}
     </>

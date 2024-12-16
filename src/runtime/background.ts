@@ -1,10 +1,8 @@
+import { onHotkeyPressed, onInstalled, onRuntimeConnect } from "./event-handlers";
 import {
   onActionClicked,
-  onContextMenuOptionClick as onContextMenuOptionClicked,
-  onHotkeyPressed,
-  onInstalled,
-  onRuntimeConnect
-} from "./event-handlers";
+  onContextMenuOptionClick as onContextMenuOptionClicked
+} from "./context-menu";
 
 chrome.runtime.onInstalled.addListener(onInstalled);
 chrome.runtime.onConnect.addListener(onRuntimeConnect);

@@ -10,6 +10,7 @@
     "outDir": "dist",
     "target": "es6",
     "types": ["node", "react", "chrome"],
+    "typeRoots": ["node_modules/@types", "src/types"],
     "paths": {
       "@shared/*": ["src/shared/*"]
     },
