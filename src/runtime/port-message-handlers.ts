@@ -1,13 +1,22 @@
 import { RuntimePortMessageEvent } from "../shared/message-event";
 import { updateStorage, getStorage } from "../shared/storage";
-import { updateContextMenu, ContextMenuOptionId } from "./context-menu";
+import { updateContextMenu, ContextMenuOptionId, getContextMenuOptionTitle } from "./context-menu";
 
 export async function onRuntimePortMessageReceived(
   message: RuntimePortMessageEvent<"text-selected" | "update-context-menu">
 ) {
+  console.log(`Received message from ${message.type}...`);
+  console.log(message);
+
   switch (message.type) {
     case "text-selected": {
-      await updateStorage({ selectedText: message.data.selectedText });
+      const { appendText, selectedText } = await updateStorage({
+        selectedText: message.data.selectedText
+      });
+      await updateContextMenu(ContextMenuOptionId, {
+        title: getContextMenuOptionTitle(message.data.selectedText, appendText),
+        enabled: true
+      });
       break;
     }
     case "update-context-menu": {
@@ -22,7 +31,7 @@ export async function onRuntimePortMessageReceived(
       }
 
       await updateContextMenu(ContextMenuOptionId, {
-        title: `Search Google for '${selectedText} ${appendText}'`,
+        title: `Google appended selection '${selectedText} ${appendText}'`,
         enabled: true
       });
     }

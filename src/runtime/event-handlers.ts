@@ -4,8 +4,12 @@ import { ContextMenuOptionId } from "./context-menu";
 import { onRuntimePortMessageReceived } from "./port-message-handlers";
 
 export async function onInstalled() {
-  // Default word on install
-  await updateStorage({ appendText: null });
+  // Set default data on install
+  const initialData = process.env.EXTENSION_STORAGE_INITIAL_DATA;
+
+  if (initialData != null) {
+    await updateStorage(JSON.parse(process.env.EXTENSION_STORAGE_INITIAL_DATA));
+  }
 
   chrome.contextMenus.create({
     id: ContextMenuOptionId,
@@ -18,6 +22,8 @@ export async function onInstalled() {
 }
 
 export async function onRuntimeConnect(port: chrome.runtime.Port) {
+  console.log(`Runtime connected from ${port.name}...`);
+
   switch (port.name) {
     case "content-script":
     case "settings-page": {

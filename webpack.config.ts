@@ -89,7 +89,10 @@ export default (_, env) => {
     },
     plugins: [
       new EnvironmentPlugin({
-        "process.env.TARGET_BROWSER": JSON.stringify(process.env.TARGET_BROWSER)
+        "process.env.TARGET_BROWSER": JSON.stringify(process.env.TARGET_BROWSER),
+        "process.env.EXTENSION_STORAGE_INITIAL_DATA": JSON.stringify(
+          process.env.STORAGE_INITIAL_DATA
+        )
       }),
       new CleanWebpackPlugin({
         verbose: true

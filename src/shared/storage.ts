@@ -9,9 +9,12 @@ export async function getStorage(): Promise<AppendTextStorage> {
   return chrome.storage.sync.get<AppendTextStorage>(AppendTextStorageKey);
 }
 
-export async function updateStorage(value: AppendTextStorage): Promise<void> {
+export async function updateStorage(value: Partial<AppendTextStorage>): Promise<AppendTextStorage> {
   const storage = await getStorage();
-  return chrome.storage.sync.set({ ...storage, ...value });
+
+  await chrome.storage.sync.set(value);
+
+  return getStorage();
 }
 
 export type StorageChangeValue<T extends Record<string, unknown>> = {

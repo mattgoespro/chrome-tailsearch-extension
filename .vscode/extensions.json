@@ -16,15 +16,14 @@
     "nyxb.vscode-styled-colors",
     "pkief.material-icon-theme",
     "ibm.output-colorizer",
-    "markosth09.color-picker",
     "cezaraugusto.vscode-chrome-extesion-manifest-json-schema",
     "meganrogge.template-string-converter",
     "dbaeumer.vscode-eslint",
-    "naumovs.color-highlight",
     "antiantisepticeye.vscode-color-picker",
     "steoates.autoimport",
     "sibiraj-s.vscode-scss-formatter",
     "mrmlnc.vscode-scss",
-    "yoavbls.pretty-ts-errors"
+    "yoavbls.pretty-ts-errors",
+    "amodio.tsl-problem-matcher"
   ]
 }

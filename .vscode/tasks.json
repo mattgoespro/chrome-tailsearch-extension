@@ -10,7 +10,12 @@
         "reveal": "always",
         "panel": "shared"
       },
-      "problemMatcher": "$ts-checker-webpack-watch"
+      "problemMatcher": "$ts-checker-webpack-watch",
+      "options": {
+        "env": {
+          "EXTENSION_STORAGE_INITIAL_DATA": "${env:EXTENSION_STORAGE_INITIAL_DATA}"
+        }
+      }
     }
   ]
 }
