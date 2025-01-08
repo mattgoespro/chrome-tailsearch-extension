@@ -1,13 +1,15 @@
-type RuntimePortMessageType = "text-selected" | "update-context-menu";
-
 type RuntimePortMessagePayloads = {
-  "text-selected": { selectedText: string };
-  "update-context-menu": undefined;
+  "content-script-text-selected": { selectedText: string };
+  "settings-update-context-menu": undefined;
 };
+type RuntimePortMessageSource = "content-script" | "settings";
+
+export type RuntimePortMessageType = keyof RuntimePortMessagePayloads;
 
 export type RuntimePortMessageEvent<T extends RuntimePortMessageType = RuntimePortMessageType> =
   RuntimePortMessagePayloads[T] extends undefined
     ? {
+        source: RuntimePortMessageSource;
         type: T;
       }
-    : { type: T; data: RuntimePortMessagePayloads[T] };
+    : { source: RuntimePortMessageSource; type: T; data: RuntimePortMessagePayloads[T] };

@@ -5,12 +5,14 @@ import FaviconsWebpackPlugin from "favicons-webpack-plugin";
 import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import TsConfigPathsWebpackPlugin from "tsconfig-paths-webpack-plugin";
-import { Configuration, EnvironmentPlugin } from "webpack";
+import { Configuration, DefinePlugin } from "webpack";
 import { ExtensionReloader } from "webpack-ext-reloader";
 import MiniCssExtractWebpackPlugin from "mini-css-extract-plugin";
+import sass from "sass";
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const ExtensionReloaderWebpackPlugin: typeof ExtensionReloader = require("webpack-ext-reloader");
+
 export default (_, env) => {
   const { mode } = env;
 
@@ -22,7 +24,7 @@ export default (_, env) => {
     entry: {
       background: path.join(__dirname, "src", "runtime", "background.ts"),
       "content-script": path.join(__dirname, "src", "content-script", "content-script.ts"),
-      "settings-page": path.join(__dirname, "src", "renderer", "index.tsx")
+      settings: path.join(__dirname, "src", "renderer", "index.tsx")
     },
     output: {
       path: path.resolve(__dirname, "dist"),
@@ -54,7 +56,7 @@ export default (_, env) => {
             {
               loader: "sass-loader",
               options: {
-                implementation: require("sass"),
+                implementation: sass,
                 sassOptions: {
                   includePaths: [path.resolve(__dirname, "src/webview/styles")]
                 }
@@ -88,10 +90,10 @@ export default (_, env) => {
       ]
     },
     plugins: [
-      new EnvironmentPlugin({
+      new DefinePlugin({
         "process.env.TARGET_BROWSER": JSON.stringify(process.env.TARGET_BROWSER),
         "process.env.EXTENSION_STORAGE_INITIAL_DATA": JSON.stringify(
-          process.env.STORAGE_INITIAL_DATA
+          process.env.STORAGE_INITIAL_DATA ?? "{}"
         )
       }),
       new CleanWebpackPlugin({
@@ -102,9 +104,9 @@ export default (_, env) => {
       }),
       new HtmlWebpackPlugin({
         filename: "options.html",
-        template: path.join(__dirname, "public", "settings-page.html"),
+        template: path.join(__dirname, "public", "settings.html"),
         inject: "body",
-        chunks: ["settings-page"],
+        chunks: ["settings"],
         hash: false
       }),
       new ForkTsCheckerWebpackPlugin({

@@ -6,13 +6,24 @@ export type AppendTextStorage = {
 };
 
 export async function getStorage(): Promise<AppendTextStorage> {
-  return chrome.storage.sync.get<AppendTextStorage>(AppendTextStorageKey);
+  return new Promise((resolve, reject) => {
+    chrome.storage.sync.get(null, (items) => {
+      if (chrome.runtime.lastError) {
+        reject(new Error(chrome.runtime.lastError.message));
+        return;
+      }
+
+      resolve(items as AppendTextStorage);
+    });
+  });
 }
 
 export async function updateStorage(value: Partial<AppendTextStorage>): Promise<AppendTextStorage> {
-  const storage = await getStorage();
-
-  await chrome.storage.sync.set(value);
+  const currentStorage = await getStorage();
+  await chrome.storage.sync.set({
+    ...currentStorage,
+    ...value
+  });
 
   return getStorage();
 }

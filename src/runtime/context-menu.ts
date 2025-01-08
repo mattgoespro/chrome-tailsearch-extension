@@ -4,32 +4,42 @@ export const ContextMenuOptionId = "searchAppendedText";
 export const ContextMenuOptionDisabledOptionLabel =
   "Configure the text to append from the extension options.";
 
+export function getContextMenuOptionTitle(selectedText: string, appendText: string) {
+  return `Search Google with appended selection '${selectedText} ${appendText}'`;
+}
+
 export async function updateContextMenu(
   id: string,
   item: chrome.contextMenus.UpdateProperties
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     chrome.contextMenus.update(id, item, async () => {
-      if (chrome.runtime.lastError) {
-        reject(chrome.runtime.lastError);
+      if (chrome.runtime.lastError != null) {
+        console.warn(
+          `Failed to update context menu item '${id}'. Chrome runtime encountered an error:`,
+          chrome.runtime.lastError
+        );
+        reject(new Error(chrome.runtime.lastError.message));
         return;
       }
 
-      console.log(`Updated context menu item '${id}' with properties:`, item);
+      // console.log(`Updated context menu item '${id}' with properties:`, item);
 
       resolve();
     });
   });
 }
 
-export function getContextMenuOptionTitle(selectedText: string, appendText: string) {
-  return `Search Google for '${selectedText} ${appendText}'`;
-}
-
-export async function onContextMenuOptionClick(info: chrome.contextMenus.OnClickData) {
+export async function onContextMenuOptionClicked({
+  menuItemId,
+  selectionText
+}: chrome.contextMenus.OnClickData) {
   const { appendText } = await getStorage();
 
   if (appendText == null) {
+    console.warn(
+      "Failed to search with appended text. The append text is not configured in the extension options. Disabling the context menu option."
+    );
     await updateContextMenu(ContextMenuOptionId, {
       title: ContextMenuOptionDisabledOptionLabel,
       enabled: false
@@ -37,28 +47,9 @@ export async function onContextMenuOptionClick(info: chrome.contextMenus.OnClick
     return;
   }
 
-  if (info.menuItemId === ContextMenuOptionId && info.selectionText != null) {
+  if (menuItemId === ContextMenuOptionId && selectionText != null) {
     chrome.tabs.create({
-      url: `https://www.google.com/search?q=${encodeURIComponent(`${info.selectionText} ${appendText}`)}`
+      url: `https://www.google.com/search?q=${encodeURIComponent(`${selectionText} ${appendText}`)}`
     });
   }
-}
-
-export async function onActionClicked(_tab: chrome.tabs.Tab) {
-  const { appendText, selectedText } = await getStorage();
-
-  const searchTerm = [selectedText, appendText].join(" ");
-
-  console.log(`Performing default action with appended text '${searchTerm}'...`);
-
-  if (appendText == null) {
-    alert("Please configure the text to append from the extension options.");
-    return;
-  }
-
-  await chrome.tabs.create({
-    url: `https://www.google.com/search?q=${encodeURIComponent(`${selectedText} ${appendText}`)}`,
-    active: false
-  });
-  console.log(`Opened new tab with search query '${searchTerm}'`);
 }

@@ -1,8 +1,8 @@
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider, QueryOptions } from "react-query";
-import { SettingsPage } from "./settings-page/settings-page";
 import React from "react";
 import { AppendTextStorage, getStorage } from "../shared/storage";
+import { Settings } from "./settings/settings";
 
 (async () => {
   const root = document.getElementById("root");
@@ -17,11 +17,11 @@ import { AppendTextStorage, getStorage } from "../shared/storage";
     }
   });
 
-  const port = chrome.runtime.connect({ name: "settings-page" });
+  const port = chrome.runtime.connect({ name: "settings" });
 
   createRoot(root).render(
     <QueryClientProvider client={client}>
-      <SettingsPage commPort={port} />
+      <Settings commPort={port} />
     </QueryClientProvider>
   );
 })();

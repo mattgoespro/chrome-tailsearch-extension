@@ -1,17 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useRef } from "react";
 import { useQuery } from "react-query";
-import * as styles from "./settings-page.module.scss";
+import * as styles from "./settings.module.scss";
 import { AppendTextStorageKey, getStorage, updateStorage } from "../../shared/storage";
 import { RuntimePortMessageEvent } from "../../shared/message-event";
 
-type SettingsPageProps = {
+type SettingsProps = {
   commPort: chrome.runtime.Port;
 };
 
-export function SettingsPage({ commPort }: SettingsPageProps) {
+export function Settings({ commPort }: SettingsProps) {
   const {
-    data: _data,
+    data: _,
     isLoading,
     error
   } = useQuery<string, Error>(AppendTextStorageKey, {
@@ -35,8 +35,9 @@ export function SettingsPage({ commPort }: SettingsPageProps) {
     await updateStorage({ appendText });
     alert("Saved settings.");
 
-    const msg: RuntimePortMessageEvent<"update-context-menu"> = {
-      type: "update-context-menu"
+    const msg: RuntimePortMessageEvent<"settings-update-context-menu"> = {
+      source: "settings",
+      type: "settings-update-context-menu"
     };
     commPort.postMessage(msg);
   };
