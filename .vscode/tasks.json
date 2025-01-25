@@ -16,6 +16,17 @@
           "EXTENSION_STORAGE_INITIAL_DATA": "${env:EXTENSION_STORAGE_INITIAL_DATA}"
         }
       }
+    },
+    {
+      "type": "npm",
+      "script": "debug: prod",
+      "label": "build",
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": "$ts-checker-webpack-watch"
     }
   ]
 }

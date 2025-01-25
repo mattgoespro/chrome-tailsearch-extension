@@ -1,7 +1,7 @@
 {
-  "name": "chrome-video-downloader-extension",
+  "name": "chrome-appended-text-search-extension",
   "version": "0.0.1",
-  "description": "Chrome extension to preview and download videos embedded in any web page.",
+  "description": "Chrome extension to search Google with an appended text string to the current selection.",
   "private": true,
   "type": "commonjs",
   "author": "hoppingmode",
@@ -10,7 +10,7 @@
   },
   "scripts": {
     "debug": "cross-env TARGET_BROWSER=chrome webpack --config webpack.config.ts --mode development --watch",
-    "build": "cross-env TARGET_BROWSER=chrome webpack --config webpack.config.ts --mode production",
+    "debug: prod": "cross-env TARGET_BROWSER=chrome webpack --config webpack.config.ts --mode production --watch",
     "lint": "eslint src"
   },
   "dependencies": {
@@ -18,7 +18,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-query": "^3.39.3",
-    "webextension-polyfill-ts": "^0.26.0"
+    "uuid": "^11.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",

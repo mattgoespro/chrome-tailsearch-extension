@@ -2,8 +2,8 @@ import { RuntimePortMessageEvent } from "../shared/message-event";
 
 let port = chrome.runtime.connect({ name: "content-script" });
 
-function log(script: string, ...args: unknown[]) {
-  console.log(`[chrome-appended-text-search] ${script}: `, ...args);
+function log(...args: unknown[]) {
+  console.log(`[chrome-appended-text-search] `, [...args, `Location: ${location.href}`].join("\n"));
 }
 
 document.addEventListener("mouseup", () => {
@@ -20,7 +20,6 @@ document.addEventListener("mouseup", () => {
   };
 
   log(
-    "content-script",
     `Selected text: ${selectedText}`,
     `Sending message through port ${port.name}: `,
     textSelectedMessage
@@ -30,14 +29,11 @@ document.addEventListener("mouseup", () => {
 });
 
 port.onDisconnect.addListener(() => {
-  log(
-    "content-script",
-    `Content script disconnected from port at location '${location.href}', reconnecting...`
-  );
+  log("Content script disconnected, reconnecting...");
   port = chrome.runtime.connect({ name: "content-script" });
 });
 
 window.onclose = () => {
   port.disconnect();
-  log("content-script", "Content script disconnected when the window closed.");
+  log("Content script disconnected because the window was closed.");
 };

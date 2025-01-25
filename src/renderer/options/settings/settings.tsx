@@ -1,30 +1,37 @@
-import React, { useEffect } from "react";
 import { useRef } from "react";
 import { useQuery } from "react-query";
 import * as styles from "./settings.module.scss";
-import { AppendTextStorageKey, getStorage, updateStorage } from "../../shared/storage";
-import { RuntimePortMessageEvent } from "../../shared/message-event";
+import { AppendTextStorageKey, getStorage, updateStorage } from "../../../shared/storage";
+import { RuntimePortMessageEvent } from "../../../shared/message-event";
+import { uuid } from "../../../shared/uuid";
 
 type SettingsProps = {
   commPort: chrome.runtime.Port;
 };
 
+type SettingsConfiguration = {
+  appendText: string;
+  appendTextOptions: string[];
+};
+
 export function Settings({ commPort }: SettingsProps) {
-  const {
-    data: _,
-    isLoading,
-    error
-  } = useQuery<string, Error>(AppendTextStorageKey, {
-    queryFn: async () => {
-      const { appendText } = await getStorage();
-      return appendText;
-    },
-    onSuccess(data) {
-      if (data != null) {
-        inputRef.current.value = data;
+  const { data, isLoading, error } = useQuery<SettingsConfiguration, Error, SettingsConfiguration>(
+    AppendTextStorageKey,
+    {
+      queryFn: async () => {
+        const { appendText, appendTextOptions } = await getStorage();
+        return {
+          appendText,
+          appendTextOptions
+        };
+      },
+      onSuccess(data) {
+        if (data != null) {
+          inputRef.current.value = data.appendText;
+        }
       }
     }
-  });
+  );
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -45,10 +52,11 @@ export function Settings({ commPort }: SettingsProps) {
   return (
     <>
       <div className={styles["heading"]}>Options</div>
+
       {(!error && (
         <div className={styles["settings-form"]}>
           <label htmlFor="word-input" className={styles["label"]}>
-            Append Term
+            Append Search Term
           </label>
           <form>
             <input
@@ -65,6 +73,10 @@ export function Settings({ commPort }: SettingsProps) {
           </form>
         </div>
       )) || <span color="red">Error: {error.message}</span>}
+      {data.appendTextOptions?.length > 0 &&
+        data.appendTextOptions.map((option) => {
+          return <div key={uuid()}>{option}</div>;
+        })}
     </>
   );
 }

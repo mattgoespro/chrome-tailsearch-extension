@@ -1,8 +1,7 @@
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider, QueryOptions } from "react-query";
-import React from "react";
-import { AppendTextStorage, getStorage } from "../shared/storage";
-import { Settings } from "./settings/settings";
+import { ActionPopup } from "./action-popup/action-popup";
+import { AppendTextStorage, getStorage } from "../../shared/storage";
 
 (async () => {
   const root = document.getElementById("root");
@@ -21,7 +20,7 @@ import { Settings } from "./settings/settings";
 
   createRoot(root).render(
     <QueryClientProvider client={client}>
-      <Settings commPort={port} />
+      <ActionPopup commPort={port} appendTextOptions={[]} />
     </QueryClientProvider>
   );
 })();

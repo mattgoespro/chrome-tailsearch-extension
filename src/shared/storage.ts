@@ -3,6 +3,7 @@ export const AppendTextStorageKey = "appendText";
 export type AppendTextStorage = {
   selectedText?: string;
   appendText?: string;
+  appendTextOptions?: string[];
 };
 
 export async function getStorage(): Promise<AppendTextStorage> {

@@ -8,6 +8,15 @@
       "skipFiles": ["<node_internals>/**"],
       "sourceMapRenames": true,
       "preLaunchTask": "debug"
+    },
+    {
+      "name": "debug: prod",
+      "type": "node",
+      "request": "attach",
+      "sourceMaps": true,
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMapRenames": true,
+      "preLaunchTask": "build"
     }
   ]
 }

@@ -7,6 +7,7 @@ module.exports = tseslint.config(
     ignores: ["temp", "*.js", "node_modules", "dist/**/*"]
   },
   {
+    ...react.configs.flat.recommended,
     files: ["src/**/*.{ts,tsx}"],
     languageOptions: {
       ...react.configs.flat.recommended.languageOptions
@@ -16,14 +17,14 @@ module.exports = tseslint.config(
         version: "detect"
       },
       ecmaFeatures: {
-        jsx: true
+        jsx: true,
+        modules: true
       }
     },
     rules: {
       "react/react-in-jsx-scope": "off",
       "react/jsx-uses-react": "off"
-    },
-    ...react.configs.flat.recommended
+    }
   },
   html.configs["flat/recommended"],
   tseslint.configs.recommended,

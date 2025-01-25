@@ -5,7 +5,7 @@ import FaviconsWebpackPlugin from "favicons-webpack-plugin";
 import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import TsConfigPathsWebpackPlugin from "tsconfig-paths-webpack-plugin";
-import { Configuration, DefinePlugin } from "webpack";
+import { Configuration, DefinePlugin, ProvidePlugin } from "webpack";
 import { ExtensionReloader } from "webpack-ext-reloader";
 import MiniCssExtractWebpackPlugin from "mini-css-extract-plugin";
 import sass from "sass";
@@ -13,9 +13,8 @@ import sass from "sass";
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const ExtensionReloaderWebpackPlugin: typeof ExtensionReloader = require("webpack-ext-reloader");
 
-export default (_, env) => {
+export default (_, env: { mode: "none" | "development" | "production" }) => {
   const { mode } = env;
-
   return {
     target: "web",
     mode,
@@ -24,7 +23,8 @@ export default (_, env) => {
     entry: {
       background: path.join(__dirname, "src", "runtime", "background.ts"),
       "content-script": path.join(__dirname, "src", "content-script", "content-script.ts"),
-      settings: path.join(__dirname, "src", "renderer", "index.tsx")
+      settings: path.join(__dirname, "src", "renderer", "options", "index.tsx"),
+      popup: path.join(__dirname, "src", "renderer", "popup", "index.tsx")
     },
     output: {
       path: path.resolve(__dirname, "dist"),
@@ -32,11 +32,14 @@ export default (_, env) => {
     },
     resolve: {
       extensions: [".ts", ".tsx", ".js"],
-      alias: {
-        "webextension-polyfill-ts": path.resolve(
-          path.join(__dirname, "node_modules", "webextension-polyfill-ts")
-        )
+      fallback: {
+        crypto: false
       },
+      // alias: {
+      //   "webextension-polyfill-ts": path.resolve(
+      //     path.join(__dirname, "node_modules", "webextension-polyfill-ts")
+      //   )
+      // },
       plugins: [new TsConfigPathsWebpackPlugin()]
     },
     module: {
@@ -91,10 +94,13 @@ export default (_, env) => {
     },
     plugins: [
       new DefinePlugin({
-        "process.env.TARGET_BROWSER": JSON.stringify(process.env.TARGET_BROWSER),
+        // "process.env.TARGET_BROWSER": JSON.stringify(process.env.TARGET_BROWSER),
         "process.env.EXTENSION_STORAGE_INITIAL_DATA": JSON.stringify(
           process.env.STORAGE_INITIAL_DATA ?? "{}"
         )
+      }),
+      new ProvidePlugin({
+        React: "react"
       }),
       new CleanWebpackPlugin({
         verbose: true
@@ -103,10 +109,17 @@ export default (_, env) => {
         filename: "css/[name].css"
       }),
       new HtmlWebpackPlugin({
-        filename: "options.html",
+        filename: "settings.html",
         template: path.join(__dirname, "public", "settings.html"),
         inject: "body",
         chunks: ["settings"],
+        hash: false
+      }),
+      new HtmlWebpackPlugin({
+        filename: "popup.html",
+        template: path.join(__dirname, "public", "popup.html"),
+        inject: "body",
+        chunks: ["popup"],
         hash: false
       }),
       new ForkTsCheckerWebpackPlugin({
@@ -128,7 +141,6 @@ export default (_, env) => {
       new FaviconsWebpackPlugin({
         logo: path.join(__dirname, "public", "assets", "logo.png"),
         mode: "webapp",
-        cache: true,
         favicons: {
           icons: {
             android: false,
@@ -152,6 +164,7 @@ export default (_, env) => {
             }
           })
         : false
-    ]
+    ],
+    externals: ["React"]
   } satisfies Configuration;
 };
