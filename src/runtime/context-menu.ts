@@ -23,8 +23,6 @@ export async function updateContextMenu(
         return;
       }
 
-      // console.log(`Updated context menu item '${id}' with properties:`, item);
-
       resolve();
     });
   });

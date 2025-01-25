@@ -9,12 +9,18 @@ import { Configuration, DefinePlugin, ProvidePlugin } from "webpack";
 import { ExtensionReloader } from "webpack-ext-reloader";
 import MiniCssExtractWebpackPlugin from "mini-css-extract-plugin";
 import sass from "sass";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const ExtensionReloaderWebpackPlugin: typeof ExtensionReloader = require("webpack-ext-reloader");
 
 export default (_, env: { mode: "none" | "development" | "production" }) => {
   const { mode } = env;
+  const storageInitialData = JSON.stringify(process.env.EXTENSION_STORAGE_INITIAL_DATA ?? {});
+
+  console.log("Using storage initial data:", storageInitialData);
   return {
     target: "web",
     mode,
@@ -95,9 +101,7 @@ export default (_, env: { mode: "none" | "development" | "production" }) => {
     plugins: [
       new DefinePlugin({
         // "process.env.TARGET_BROWSER": JSON.stringify(process.env.TARGET_BROWSER),
-        "process.env.EXTENSION_STORAGE_INITIAL_DATA": JSON.stringify(
-          process.env.STORAGE_INITIAL_DATA ?? "{}"
-        )
+        "process.env.EXTENSION_STORAGE_INITIAL_DATA": storageInitialData
       }),
       new ProvidePlugin({
         React: "react"

@@ -11,8 +11,6 @@ export async function onSettingsPagePortMessageReceived(
   message: RuntimePortMessageEvent<"settings-update-context-menu">
 ) {
   console.log(`Handling setting page message: ${message.type}`);
-  // console.log(message);
-
   const { appendText, selectedText } = await getStorage();
 
   if (appendText == null) {
@@ -36,6 +34,17 @@ export async function onSettingsPagePortMessageReceived(
   console.log(
     `Settings change triggered a context menu option title update -> '${menuOptionTitle}'`
   );
+}
+
+export async function onPopupPortMessageReceived(
+  message: RuntimePortMessageEvent<"popup-update-append-text-option">
+) {
+  console.log(`Handling popup message: ${message.type}`);
+
+  const selectedOption = message.data.appendText;
+
+  const newStorageData = await updateStorage({ appendText: selectedOption });
+  console.log(`Popup append text option change triggered a storage data update`, newStorageData);
 }
 
 export async function onContentScriptPortMessageReceived(

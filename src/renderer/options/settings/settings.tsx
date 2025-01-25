@@ -1,7 +1,12 @@
 import { useRef } from "react";
 import { useQuery } from "react-query";
 import * as styles from "./settings.module.scss";
-import { AppendTextStorageKey, getStorage, updateStorage } from "../../../shared/storage";
+import {
+  AppendTextStorage,
+  AppendTextStorageKey,
+  getStorage,
+  updateStorage
+} from "../../../shared/storage";
 import { RuntimePortMessageEvent } from "../../../shared/message-event";
 import { uuid } from "../../../shared/uuid";
 
@@ -9,13 +14,8 @@ type SettingsProps = {
   commPort: chrome.runtime.Port;
 };
 
-type SettingsConfiguration = {
-  appendText: string;
-  appendTextOptions: string[];
-};
-
 export function Settings({ commPort }: SettingsProps) {
-  const { data, isLoading, error } = useQuery<SettingsConfiguration, Error, SettingsConfiguration>(
+  const { data, isLoading, error } = useQuery<AppendTextStorage, Error, AppendTextStorage>(
     AppendTextStorageKey,
     {
       queryFn: async () => {
@@ -25,7 +25,7 @@ export function Settings({ commPort }: SettingsProps) {
           appendTextOptions
         };
       },
-      onSuccess(data) {
+      onSuccess: (data) => {
         if (data != null) {
           inputRef.current.value = data.appendText;
         }

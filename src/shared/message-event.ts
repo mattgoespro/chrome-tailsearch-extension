@@ -1,8 +1,10 @@
 type RuntimePortMessagePayloads = {
   "content-script-text-selected": { selectedText: string };
   "settings-update-context-menu": undefined;
+  "popup-update-append-text-option": { appendText: string };
 };
-type RuntimePortMessageSource = "content-script" | "settings";
+
+type RuntimePortMessageSource = "content-script" | "settings" | "popup";
 
 export type RuntimePortMessageType = keyof RuntimePortMessagePayloads;
 

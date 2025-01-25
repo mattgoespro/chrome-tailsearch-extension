@@ -3,6 +3,7 @@ import { updateStorage } from "../shared/storage";
 import { ContextMenuOptionId } from "./context-menu";
 import {
   onContentScriptPortMessageReceived,
+  onPopupPortMessageReceived,
   onSettingsPagePortMessageReceived
 } from "./port/message-handlers";
 import { onActionClicked } from "./action";
@@ -26,7 +27,7 @@ export async function onInstalled() {
 }
 
 export async function onReceivedConnection(port: chrome.runtime.Port) {
-  console.log(`Background received connection from port ID '${port.name}'`);
+  console.log(`Background received connection from port '${port.name}'`);
 
   switch (port.name) {
     case "content-script":
@@ -36,6 +37,9 @@ export async function onReceivedConnection(port: chrome.runtime.Port) {
       port.onMessage.addListener(onSettingsPagePortMessageReceived);
       break;
     }
+    case "popup":
+      port.onMessage.addListener(onPopupPortMessageReceived);
+      break;
     default:
       console.warn(`Unknown port '${port.name}'!`);
       break;
