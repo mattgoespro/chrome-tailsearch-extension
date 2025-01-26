@@ -5,21 +5,11 @@
       "type": "node",
       "request": "attach",
       "sourceMaps": true,
-      "skipFiles": ["<node_internals>/**"],
       "sourceMapRenames": true,
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
       "preLaunchTask": "debug",
-      "env": {
-        "EXTENSION_STORAGE_INITIAL_DATA": "${env:EXTENSION_STORAGE_INITIAL_DATA}"
-      }
-    },
-    {
-      "name": "debug: prod",
-      "type": "node",
-      "request": "attach",
-      "sourceMaps": true,
-      "skipFiles": ["<node_internals>/**"],
-      "sourceMapRenames": true,
-      "preLaunchTask": "build"
+      // map sourcemaps from `dist/js/*.js` to `src`
+      "resolveSourceMapLocations": ["${workspaceFolder}/dist/**/*.map.js"]
     }
   ]
 }

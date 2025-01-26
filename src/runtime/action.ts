@@ -1,7 +1,7 @@
-import { getStorage } from "../shared/storage";
+import { getChromeStorageData } from "../shared/storage";
 
 export async function onActionClicked(tab: chrome.tabs.Tab) {
-  const { appendText, selectedText } = await getStorage();
+  const { searchTerm: appendText, pageSelectedText: selectedText } = await getChromeStorageData();
 
   const searchTerm = [selectedText, appendText].join(" ");
 

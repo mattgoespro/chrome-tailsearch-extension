@@ -5,22 +5,25 @@ import FaviconsWebpackPlugin from "favicons-webpack-plugin";
 import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import TsConfigPathsWebpackPlugin from "tsconfig-paths-webpack-plugin";
-import { Configuration, DefinePlugin, ProvidePlugin } from "webpack";
+import { Configuration, DefinePlugin, EnvironmentPlugin, ProvidePlugin } from "webpack";
 import { ExtensionReloader } from "webpack-ext-reloader";
 import MiniCssExtractWebpackPlugin from "mini-css-extract-plugin";
 import sass from "sass";
-import dotenv from "dotenv";
-
-dotenv.config();
+import { Issue } from "fork-ts-checker-webpack-plugin/lib/issue";
+import initialStorageData from "./initial-storage-data.json";
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const ExtensionReloaderWebpackPlugin: typeof ExtensionReloader = require("webpack-ext-reloader");
 
-export default (_, env: { mode: "none" | "development" | "production" }) => {
+export default (_, env: { mode: "development" | "production" | "none" | undefined }) => {
   const { mode } = env;
-  const storageInitialData = JSON.stringify(process.env.EXTENSION_STORAGE_INITIAL_DATA ?? {});
 
-  console.log("Using storage initial data:", storageInitialData);
+  if (initialStorageData == null) {
+    console.warn(
+      `Missing initial storage data in './initial-storage-data.json', data won\`t be set.`
+    );
+  }
+
   return {
     target: "web",
     mode,
@@ -41,11 +44,6 @@ export default (_, env: { mode: "none" | "development" | "production" }) => {
       fallback: {
         crypto: false
       },
-      // alias: {
-      //   "webextension-polyfill-ts": path.resolve(
-      //     path.join(__dirname, "node_modules", "webextension-polyfill-ts")
-      //   )
-      // },
       plugins: [new TsConfigPathsWebpackPlugin()]
     },
     module: {
@@ -67,7 +65,7 @@ export default (_, env: { mode: "none" | "development" | "production" }) => {
               options: {
                 implementation: sass,
                 sassOptions: {
-                  includePaths: [path.resolve(__dirname, "src/webview/styles")]
+                  includePaths: []
                 }
               }
             },
@@ -99,9 +97,8 @@ export default (_, env: { mode: "none" | "development" | "production" }) => {
       ]
     },
     plugins: [
-      new DefinePlugin({
-        // "process.env.TARGET_BROWSER": JSON.stringify(process.env.TARGET_BROWSER),
-        "process.env.EXTENSION_STORAGE_INITIAL_DATA": storageInitialData
+      new EnvironmentPlugin({
+        EXTENSION_STORAGE_INITIAL_DATA: JSON.stringify(initialStorageData)
       }),
       new ProvidePlugin({
         React: "react"
@@ -117,6 +114,7 @@ export default (_, env: { mode: "none" | "development" | "production" }) => {
         template: path.join(__dirname, "public", "settings.html"),
         inject: "body",
         chunks: ["settings"],
+        scriptLoading: "defer",
         hash: false
       }),
       new HtmlWebpackPlugin({
@@ -124,17 +122,21 @@ export default (_, env: { mode: "none" | "development" | "production" }) => {
         template: path.join(__dirname, "public", "popup.html"),
         inject: "body",
         chunks: ["popup"],
+        scriptLoading: "defer",
         hash: false
       }),
       new ForkTsCheckerWebpackPlugin({
-        formatter: "basic"
+        formatter: (issue: Issue) => {
+          const { file, severity, code, message } = issue;
+          return `${file} (${severity}): ${code} - ${message}`;
+        }
       }),
       new CopyWebpackPlugin({
         patterns: [
           {
             from: path.join(__dirname, "public", "manifest.json"),
             to: path.join(__dirname, "dist"),
-            transform: (content: Buffer) => {
+            transform: (content) => {
               const manifest = JSON.parse(content.toString());
               delete manifest["$schema"];
               return JSON.stringify(manifest, null, 2);
@@ -169,6 +171,6 @@ export default (_, env: { mode: "none" | "development" | "production" }) => {
           })
         : false
     ],
-    externals: ["React"]
+    externals: ["React"] // TODO: is this needed?
   } satisfies Configuration;
 };

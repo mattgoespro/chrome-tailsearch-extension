@@ -1,5 +1,5 @@
-import { ContextMenuOptionDisabledOptionLabel } from "./context-menu";
-import { updateStorage } from "../shared/storage";
+import { ContextMenuOptionDisabledOptionLabel, getContextMenuOptionTitle } from "./context-menu";
+import { updateChromeStorageData } from "../shared/storage";
 import { ContextMenuOptionId } from "./context-menu";
 import {
   onContentScriptPortMessageReceived,
@@ -9,19 +9,26 @@ import {
 import { onActionClicked } from "./action";
 
 export async function onInstalled() {
-  // Set default data on install
-  const initialData = process.env.EXTENSION_STORAGE_INITIAL_DATA;
-
-  if (initialData != null) {
-    await updateStorage(JSON.parse(process.env.EXTENSION_STORAGE_INITIAL_DATA));
-  }
-
-  chrome.contextMenus.create({
+  const contextMenuCreateProps: chrome.contextMenus.CreateProperties = {
     id: ContextMenuOptionId,
     title: ContextMenuOptionDisabledOptionLabel,
     enabled: false,
     contexts: ["selection"]
-  });
+  };
+
+  // Set default data on install
+  const { EXTENSION_STORAGE_INITIAL_DATA } = process.env;
+
+  if (EXTENSION_STORAGE_INITIAL_DATA != null) {
+    const initialData = JSON.parse(EXTENSION_STORAGE_INITIAL_DATA);
+
+    await updateChromeStorageData(initialData);
+
+    contextMenuCreateProps.enabled = true;
+    contextMenuCreateProps.title = getContextMenuOptionTitle("", initialData.appendedText);
+  }
+
+  chrome.contextMenus.create(contextMenuCreateProps);
 
   chrome.action.onClicked.addListener(onActionClicked);
 }

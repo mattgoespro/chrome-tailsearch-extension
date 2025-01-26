@@ -1,5 +1,5 @@
 import { RuntimePortMessageEvent } from "../../shared/message-event";
-import { updateStorage, getStorage } from "../../shared/storage";
+import { updateChromeStorageData, getChromeStorageData } from "../../shared/storage";
 import {
   updateContextMenu,
   ContextMenuOptionId,
@@ -11,7 +11,7 @@ export async function onSettingsPagePortMessageReceived(
   message: RuntimePortMessageEvent<"settings-update-context-menu">
 ) {
   console.log(`Handling setting page message: ${message.type}`);
-  const { appendText, selectedText } = await getStorage();
+  const { searchTerm: appendText, pageSelectedText: selectedText } = await getChromeStorageData();
 
   if (appendText == null) {
     await updateContextMenu(ContextMenuOptionId, {
@@ -43,7 +43,7 @@ export async function onPopupPortMessageReceived(
 
   const selectedOption = message.data.appendText;
 
-  const newStorageData = await updateStorage({ appendText: selectedOption });
+  const newStorageData = await updateChromeStorageData({ searchTerm: selectedOption });
   console.log(`Popup append text option change triggered a storage data update`, newStorageData);
 }
 
@@ -53,12 +53,12 @@ export async function onContentScriptPortMessageReceived(
   console.log(`Handling content script message: ${message.type}`);
   console.log(message);
 
-  const updatedStorageData = await updateStorage({
-    selectedText: message.data.selectedText
+  const updatedStorageData = await updateChromeStorageData({
+    pageSelectedText: message.data.selectedText
   });
   console.log("Updated storage:", updatedStorageData);
 
-  if (updatedStorageData.appendText == null) {
+  if (updatedStorageData.searchTerm == null) {
     await updateContextMenu(ContextMenuOptionId, {
       title: ContextMenuOptionDisabledOptionLabel,
       enabled: false
@@ -68,8 +68,8 @@ export async function onContentScriptPortMessageReceived(
   }
 
   const menuOptionTitle = getContextMenuOptionTitle(
-    updatedStorageData.selectedText,
-    updatedStorageData.appendText
+    updatedStorageData.pageSelectedText,
+    updatedStorageData.searchTerm
   );
 
   await updateContextMenu(ContextMenuOptionId, {

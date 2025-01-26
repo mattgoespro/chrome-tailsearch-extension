@@ -1,4 +1,5 @@
 {
+  "$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/f46a56f2c27c325336b68130c88263a400808c61/src/schemas/json/chrome-manifest.json",
   "manifest_version": 3,
   "name": "Appended Text Google Search",
   "version": "1.0",
@@ -36,7 +37,7 @@
     }
   },
   "options_page": "settings.html",
-  "permissions": ["contextMenus", "scripting", "storage", "tabs", "activeTab", "commands"],
+  "permissions": ["contextMenus", "scripting", "storage", "tabs", "activeTab"],
   "host_permissions": ["https://*/*", "http://*/*"],
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self';"

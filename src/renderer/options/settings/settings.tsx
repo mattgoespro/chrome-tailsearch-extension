@@ -1,82 +1,80 @@
-import { useRef } from "react";
-import { useQuery } from "react-query";
-import * as styles from "./settings.module.scss";
-import {
-  AppendTextStorage,
-  AppendTextStorageKey,
-  getStorage,
-  updateStorage
-} from "../../../shared/storage";
+import { useContext, useRef } from "react";
+import { updateChromeStorageData } from "../../../shared/storage";
 import { RuntimePortMessageEvent } from "../../../shared/message-event";
-import { uuid } from "../../../shared/uuid";
+import { useStorage } from "../../shared/hooks/use-storage";
+import { PortContext } from "../../shared/contexts/port-context";
+import { TailsearchTermSelect } from "../../shared/components/tailsearch-term-select/tailsearch-term-select";
+import Button from "@mui/material/Button";
+import FormGroup from "@mui/material/FormGroup";
+import { Container, IconButton, Typography } from "@mui/material";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
 
-type SettingsProps = {
-  commPort: chrome.runtime.Port;
-};
-
-export function Settings({ commPort }: SettingsProps) {
-  const { data, isLoading, error } = useQuery<AppendTextStorage, Error, AppendTextStorage>(
-    AppendTextStorageKey,
-    {
-      queryFn: async () => {
-        const { appendText, appendTextOptions } = await getStorage();
-        return {
-          appendText,
-          appendTextOptions
-        };
-      },
-      onSuccess: (data) => {
-        if (data != null) {
-          inputRef.current.value = data.appendText;
-        }
-      }
-    }
-  );
+export function Settings() {
+  const [storage] = useStorage();
+  const port = useContext(PortContext);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleOnSave = async () => {
+  function handleOnSave() {
     const newValue = (inputRef.current.value ?? "").trim();
-    const appendText = newValue.length > 0 ? newValue : null;
+    const searchTerm = newValue?.length > 0 ? newValue : null;
 
-    await updateStorage({ appendText });
-    alert("Saved settings.");
+    updateChromeStorageData({ searchTerm }).then(() => {
+      alert("Saved settings.");
 
-    const msg: RuntimePortMessageEvent<"settings-update-context-menu"> = {
-      source: "settings",
-      type: "settings-update-context-menu"
-    };
-    commPort.postMessage(msg);
-  };
+      const msg: RuntimePortMessageEvent<"settings-update-context-menu"> = {
+        source: "settings",
+        type: "settings-update-context-menu"
+      };
+      port.postMessage(msg);
+    });
+  }
 
   return (
-    <>
-      <div className={styles["heading"]}>Options</div>
-
-      {(!error && (
-        <div className={styles["settings-form"]}>
-          <label htmlFor="word-input" className={styles["label"]}>
-            Append Search Term
-          </label>
-          <form>
-            <input
-              id="word-input"
-              className={styles["word-input"]}
-              ref={inputRef}
-              disabled={isLoading}
-              placeholder={isLoading ? "Loading..." : "Set the text to append to the selection..."}
-            />
-            <button className={styles["save-button"]} disabled={isLoading} onClick={handleOnSave}>
-              Save
-            </button>
-            <input type="submit" hidden onSubmit={handleOnSave} />
-          </form>
-        </div>
-      )) || <span color="red">Error: {error.message}</span>}
-      {data.appendTextOptions?.length > 0 &&
-        data.appendTextOptions.map((option) => {
-          return <div key={uuid()}>{option}</div>;
-        })}
-    </>
+    <Container
+      sx={{
+        display: "flex",
+        flex: 1,
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center"
+      }}
+    >
+      <Typography variant="h1" sx={{ marginBottom: 2 }}>
+        Tailsearch Settings
+      </Typography>
+      {(!storage.error && (
+        <Container
+          sx={{ display: "flex", flexDirection: "column", justifyContent: "center", gap: 2 }}
+        >
+          <Typography variant="overline" color="text.primary">
+            Search Term
+          </Typography>
+          <FormGroup>
+            <TailsearchTermSelect />
+          </FormGroup>
+          <Button
+            variant="contained"
+            type="submit"
+            disabled={storage.loading}
+            onClick={handleOnSave}
+          >
+            Save
+          </Button>
+        </Container>
+      )) || (
+        <Typography color="error" variant="overline">
+          Error: {storage.error.message}
+        </Typography>
+      )}
+      <List></List>
+      {storage.data.options?.length > 0 &&
+        storage.data.options.map((option) => (
+          <ListItem dense secondaryAction={<IconButton>delete</IconButton>}>
+            {option}
+          </ListItem>
+        ))}
+    </Container>
   );
 }

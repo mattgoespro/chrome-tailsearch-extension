@@ -15,15 +15,11 @@
     "formulahendry.auto-rename-tag",
     "nyxb.vscode-styled-colors",
     "pkief.material-icon-theme",
-    "ibm.output-colorizer",
-    "cezaraugusto.vscode-chrome-extesion-manifest-json-schema",
     "meganrogge.template-string-converter",
-    "dbaeumer.vscode-eslint",
-    "antiantisepticeye.vscode-color-picker",
-    "steoates.autoimport",
     "sibiraj-s.vscode-scss-formatter",
     "mrmlnc.vscode-scss",
     "yoavbls.pretty-ts-errors",
-    "amodio.tsl-problem-matcher"
+    "amodio.tsl-problem-matcher",
+    "naumovs.color-highlight"
   ]
 }

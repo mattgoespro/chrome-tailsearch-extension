@@ -1,12 +1,12 @@
-export const AppendTextStorageKey = "appendText";
+export const TailsearchChromeStorageKey = "tailsearch" as const;
 
-export type AppendTextStorage = {
-  selectedText?: string;
-  appendText?: string;
-  appendTextOptions?: string[];
+export type TailsearchStorage = {
+  pageSelectedText?: string;
+  searchTerm?: string;
+  options?: string[];
 };
 
-export async function getStorage(): Promise<AppendTextStorage> {
+export async function getChromeStorageData(): Promise<TailsearchStorage> {
   return new Promise((resolve, reject) => {
     chrome.storage.sync.get(null, (items) => {
       if (chrome.runtime.lastError) {
@@ -14,22 +14,24 @@ export async function getStorage(): Promise<AppendTextStorage> {
         return;
       }
 
-      resolve(items as AppendTextStorage);
+      resolve(items as TailsearchStorage);
     });
   });
 }
 
-export async function updateStorage(value: Partial<AppendTextStorage>): Promise<AppendTextStorage> {
-  const currentStorage = await getStorage();
+export async function updateChromeStorageData(
+  value: Partial<TailsearchStorage>
+): Promise<TailsearchStorage> {
+  const currentStorage = await getChromeStorageData();
   await chrome.storage.sync.set({
     ...currentStorage,
     ...value
   });
 
-  return getStorage();
+  return getChromeStorageData();
 }
 
-export type StorageChangeValue<T extends Record<string, unknown>> = {
+export type TailsearchStorageDataChange<T extends Record<string, unknown>> = {
   [K in keyof T]: {
     oldValue: T[K];
     newValue: T[K];

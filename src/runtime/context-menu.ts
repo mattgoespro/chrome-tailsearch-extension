@@ -1,4 +1,4 @@
-import { getStorage } from "../shared/storage";
+import { getChromeStorageData } from "../shared/storage";
 
 export const ContextMenuOptionId = "searchAppendedText";
 export const ContextMenuOptionDisabledOptionLabel =
@@ -32,7 +32,7 @@ export async function onContextMenuOptionClicked({
   menuItemId,
   selectionText
 }: chrome.contextMenus.OnClickData) {
-  const { appendText } = await getStorage();
+  const { searchTerm: appendText } = await getChromeStorageData();
 
   if (appendText == null) {
     console.warn(
