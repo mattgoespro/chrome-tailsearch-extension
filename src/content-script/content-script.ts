@@ -1,9 +1,5 @@
 import { RuntimePortMessageEvent } from "../shared/message-event";
 
-chrome.runtime.getContexts({}).then((contexts) => {
-  console.log(`${location.href}: content script contexts: `, contexts);
-});
-
 let port = chrome.runtime.connect({ name: "content-script" });
 
 function log(...args: unknown[]) {

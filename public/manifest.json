@@ -36,7 +36,7 @@
     }
   },
   "options_page": "settings.html",
-  "permissions": ["contextMenus", "scripting", "storage", "tabs", "activeTab", "commands"],
+  "permissions": ["contextMenus", "scripting", "storage", "tabs", "activeTab"],
   "host_permissions": ["https://*/*", "http://*/*"],
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self';"
