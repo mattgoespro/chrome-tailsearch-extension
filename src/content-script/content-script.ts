@@ -1,39 +1,35 @@
 import { RuntimePortMessageEvent } from "../shared/message-event";
 
-let port = chrome.runtime.connect({ name: "content-script" });
+console.log("Loaded content script");
 
 function log(...args: unknown[]) {
   console.log(`[chrome-appended-text-search] `, [...args, `Location: ${location.href}`].join("\n"));
 }
 
-document.addEventListener("mouseup", () => {
-  const selectedText = document.getSelection().toString();
+chrome.runtime.onConnect.addListener((port: chrome.runtime.Port) => {
+  log(`Content script connected to port: ${port.name}`);
 
-  if (selectedText == null || selectedText.trim() === "") {
-    return;
-  }
+  document.addEventListener("mouseup", () => {
+    const selectedText = document.getSelection().toString();
 
-  const textSelectedMessage: RuntimePortMessageEvent<"content-script-text-selected"> = {
-    type: "content-script-text-selected",
-    source: "content-script",
-    data: { selectedText: selectedText }
-  };
+    if ((selectedText ?? "").trim().length === 0) {
+      return;
+    }
 
-  log(
-    `Selected text: ${selectedText}`,
-    `Sending message through port ${port.name}: `,
-    textSelectedMessage
-  );
+    const textSelectedMessage: RuntimePortMessageEvent<"content-script-text-selected"> = {
+      type: "content-script-text-selected",
+      source: "content-script",
+      data: { selectedText: selectedText }
+    };
 
-  port.postMessage(textSelectedMessage);
+    log(
+      `Selected text: ${selectedText}`,
+      `Sending message through port ${port.name}: `,
+      textSelectedMessage
+    );
+
+    port.postMessage(textSelectedMessage);
+  });
+
+  return;
 });
-
-port.onDisconnect.addListener(() => {
-  log("Content script disconnected, reconnecting...");
-  port = chrome.runtime.connect({ name: "content-script" });
-});
-
-window.onclose = () => {
-  port.disconnect();
-  log("Content script disconnected because the window was closed.");
-};

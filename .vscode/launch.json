@@ -6,10 +6,13 @@
       "request": "attach",
       "sourceMaps": true,
       "sourceMapRenames": true,
-      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
-      "preLaunchTask": "debug",
-      // map sourcemaps from `dist/js/*.js` to `src`
-      "resolveSourceMapLocations": ["${workspaceFolder}/dist/**/*.map.js"]
+      "outFiles": ["${workspaceFolder}/dist"],
+      "sourceMapPathOverrides": {
+        "webpack:///./~/*": "${workspaceFolder}/node_modules/*",
+        "webpack://?:*/*": "${workspaceFolder}/*",
+        "webpack://*/*": "${workspaceFolder}/*"
+      },
+      "preLaunchTask": "debug"
     }
   ]
 }

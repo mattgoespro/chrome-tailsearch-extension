@@ -1,10 +1,16 @@
 import { onContextMenuOptionClicked } from "./context-menu";
-import { onInstalled, onReceivedConnection } from "./event-handlers";
+import { onInstalled, onBackgroundReceivedConnection, onTabActivated } from "./event-handlers";
 
-chrome.runtime.getContexts({}).then((contexts) => {
-  console.log(`${location.href}: content script contexts: `, contexts);
-});
-
+/**
+ * Runtime event listeners
+ */
 chrome.runtime.onInstalled.addListener(onInstalled);
-chrome.runtime.onConnect.addListener(onReceivedConnection);
+chrome.runtime.onConnect.addListener(onBackgroundReceivedConnection);
+
+chrome.tabs.onActivated.addListener(onTabActivated);
+
+/**
+ * Context menu event listeners
+ * @see https://developer.chrome.com/docs/extensions/reference/contextMenus/
+ */
 chrome.contextMenus.onClicked.addListener(onContextMenuOptionClicked);

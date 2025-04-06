@@ -37,7 +37,8 @@ module.exports = tseslint.config(
           varsIgnorePattern: "^_",
           argsIgnorePattern: "^_"
         }
-      ]
+      ],
+      "@typescript-eslint/no-explicit-any": "warn"
     }
   }
 );
