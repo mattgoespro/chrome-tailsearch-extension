@@ -5,7 +5,7 @@ import FaviconsWebpackPlugin from "favicons-webpack-plugin";
 import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import TsConfigPathsWebpackPlugin from "tsconfig-paths-webpack-plugin";
-import { Configuration, DefinePlugin, EnvironmentPlugin, ProvidePlugin } from "webpack";
+import { Configuration, EnvironmentPlugin, ProvidePlugin } from "webpack";
 import { ExtensionReloader } from "webpack-ext-reloader";
 import MiniCssExtractWebpackPlugin from "mini-css-extract-plugin";
 import sass from "sass";
@@ -15,20 +15,32 @@ import initialStorageData from "./initial-storage-data.json";
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const ExtensionReloaderWebpackPlugin: typeof ExtensionReloader = require("webpack-ext-reloader");
 
-export default (_, env: { mode: "development" | "production" | "none" | undefined }) => {
-  const { mode } = env;
+if (initialStorageData == null) {
+  console.warn(
+    `Missing initial storage data in './initial-storage-data.json', data won\`t be set.`
+  );
+}
 
-  if (initialStorageData == null) {
-    console.warn(
-      `Missing initial storage data in './initial-storage-data.json', data won\`t be set.`
-    );
+function getMode(mode: "development" | "production" | "none" | undefined) {
+  switch (mode) {
+    case undefined:
+    case "none":
+    case "development":
+      return "development";
+    case "production":
+      return "production";
+    default:
+      throw new Error(`Unknown mode: ${mode}`);
   }
+}
+
+export default (_, env: { mode: "development" | "production" | "none" | undefined }) => {
+  const mode = getMode(env.mode);
 
   return {
     target: "web",
     mode,
     stats: "errors-warnings",
-    devtool: "cheap-module-source-map",
     entry: {
       background: path.join(__dirname, "src", "runtime", "background.ts"),
       "content-script": path.join(__dirname, "src", "content-script", "content-script.ts"),
@@ -48,6 +60,11 @@ export default (_, env: { mode: "development" | "production" | "none" | undefine
     },
     module: {
       rules: [
+        {
+          test: /\.[tj]sx?$/,
+          loader: "babel-loader",
+          exclude: /node_modules/
+        },
         {
           test: /\.scss$/,
           use: [
@@ -88,11 +105,6 @@ export default (_, env: { mode: "development" | "production" | "none" | undefine
             "postcss-loader"
           ],
           exclude: /node_modules/
-        },
-        {
-          test: /\.[tj]sx?$/,
-          loader: "babel-loader",
-          exclude: /node_modules/
         }
       ]
     },
@@ -106,6 +118,20 @@ export default (_, env: { mode: "development" | "production" | "none" | undefine
       new CleanWebpackPlugin({
         verbose: true
       }),
+      // new TerserWebpackPlugin({
+      //   include: /\.js$/,
+      //   exclude: /node_modules/,
+      //   parallel: true,
+      //   terserOptions: {
+      //     compress: false,
+      //     mangle: false,
+      //     sourceMap: true,
+      //     format: {
+      //       comments: false
+      //     }
+      //   },
+      //   extractComments: false
+      // }),
       new MiniCssExtractWebpackPlugin({
         filename: "css/[name].css"
       }),

@@ -16,20 +16,22 @@ export function registerConnection(connectionPort: chrome.runtime.Port) {
     return;
   }
 
-  if (ActiveConnections[connectionPort.name] != null) {
+  const connectionName = connectionPort.name;
+
+  if (ActiveConnections[connectionName] != null) {
     console.log(
-      `Updating connection for port '${connectionPort.name}' from sender '${connectionPort.sender.id}'`
+      `Updating connection for port '${connectionName}' from sender '${connectionPort.sender?.id ?? "unknown"}'`
     );
-    ActiveConnections[connectionPort.sender.id] = connectionPort;
+    ActiveConnections[connectionName] = connectionPort;
     return;
   }
 
-  console.log(`Adding new connection for supported port '${connectionPort.name}'`);
+  console.log(`Adding new connection for supported port '${connectionName}'`);
 
-  ActiveConnections[connectionPort.name] = connectionPort;
+  ActiveConnections[connectionName] = connectionPort;
 
   connectionPort.onDisconnect.addListener(() => {
-    console.log(`Background disconnected from port '${connectionPort.name}'`);
+    console.log(`Background disconnected from port '${connectionName}'`);
     delete ActiveConnections[connectionPort.name];
   });
 }

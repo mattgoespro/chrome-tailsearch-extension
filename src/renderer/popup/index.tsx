@@ -5,32 +5,35 @@ import { TailsearchStorage, getChromeStorageData } from "../../shared/storage";
 import { PortContext } from "../shared/contexts/port-context";
 import { ThemeProvider } from "@mui/material";
 import { theme } from "../shared/theme/theme";
+import { benchmarkFunction } from "../shared/timer";
 
-(async () => {
-  const root = document.getElementById("root");
+benchmarkFunction(() => {
+  (async () => {
+    const appRoot = createRoot(document.getElementById("root"));
 
-  const initialData = await getChromeStorageData();
-  console.log("Opening popup with initial data:", initialData);
+    const initialData = await getChromeStorageData();
+    console.log("Opening popup with initial data:", initialData);
 
-  const queryOptions: QueryOptions<TailsearchStorage> = {
-    initialData
-  };
+    const queryOptions: QueryOptions<TailsearchStorage> = {
+      initialData
+    };
 
-  const client = new QueryClient({
-    defaultOptions: {
-      queries: queryOptions
-    }
-  });
+    const client = new QueryClient({
+      defaultOptions: {
+        queries: queryOptions
+      }
+    });
 
-  const port = chrome.runtime.connect({ name: "popup" });
+    const port = chrome.runtime.connect({ name: "popup" });
 
-  createRoot(root).render(
-    <ThemeProvider theme={theme}>
-      <PortContext.Provider value={port}>
-        <QueryClientProvider client={client}>
-          <ActionPopup />
-        </QueryClientProvider>
-      </PortContext.Provider>
-    </ThemeProvider>
-  );
-})();
+    appRoot.render(
+      <ThemeProvider theme={theme}>
+        <PortContext.Provider value={port}>
+          <QueryClientProvider client={client}>
+            <ActionPopup />
+          </QueryClientProvider>
+        </PortContext.Provider>
+      </ThemeProvider>
+    );
+  })();
+});
