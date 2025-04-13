@@ -1,5 +1,3 @@
-import { getChromeStorageData } from "../shared/storage";
-
 export const ContextMenuOptionId = "searchAppendedText";
 export const ContextMenuOptionDisabledOptionLabel =
   "Configure the text to append from the extension options.";
@@ -26,28 +24,4 @@ export async function updateContextMenu(
       resolve();
     });
   });
-}
-
-export async function onContextMenuOptionClicked({
-  menuItemId,
-  selectionText
-}: chrome.contextMenus.OnClickData) {
-  const { searchTerm: appendText } = await getChromeStorageData();
-
-  if (appendText == null) {
-    console.warn(
-      "Failed to search with appended text. The append text is not configured in the extension options. Disabling the context menu option."
-    );
-    await updateContextMenu(ContextMenuOptionId, {
-      title: ContextMenuOptionDisabledOptionLabel,
-      enabled: false
-    });
-    return;
-  }
-
-  if (menuItemId === ContextMenuOptionId && selectionText != null) {
-    chrome.tabs.create({
-      url: `https://www.google.com/search?q=${encodeURIComponent(`${selectionText} ${appendText}`)}`
-    });
-  }
 }

@@ -2,12 +2,11 @@ import { RuntimePortMessageEvent } from "../shared/message-event";
 
 console.log("Loaded content script");
 
-function log(...args: unknown[]) {
-  console.log(`[chrome-appended-text-search] `, [...args, `Location: ${location.href}`].join("\n"));
-}
-
+/**
+ * Runs when the background script connects to the this script using `chrome.tabs.connect`.
+ */
 chrome.runtime.onConnect.addListener((port: chrome.runtime.Port) => {
-  log(`Content script connected to port: ${port.name}`);
+  console.log(`Content script connected to background through port: ${port.name}`);
 
   document.addEventListener("mouseup", () => {
     const selectedText = document.getSelection().toString();
@@ -22,11 +21,7 @@ chrome.runtime.onConnect.addListener((port: chrome.runtime.Port) => {
       data: { selectedText: selectedText }
     };
 
-    log(
-      `Selected text: ${selectedText}`,
-      `Sending message through port ${port.name}: `,
-      textSelectedMessage
-    );
+    console.log(`Sending selected text to background: ${selectedText}`);
 
     port.postMessage(textSelectedMessage);
   });

@@ -1,13 +1,13 @@
-import { RuntimePortMessageEvent } from "../../shared/message-event";
-import { updateChromeStorageData, getChromeStorageData } from "../../shared/storage";
+import { RuntimePortMessageEvent } from "../../../shared/message-event";
+import { updateChromeStorageData, getChromeStorageData } from "../../../shared/storage";
 import {
   updateContextMenu,
   ContextMenuOptionId,
   getContextMenuOptionTitle,
   ContextMenuOptionDisabledOptionLabel
-} from "../context-menu";
+} from "../../components/context-menu";
 
-export async function onSettingsPagePortMessageReceived(
+export async function onSettingsPageSenderMessageReceived(
   message: RuntimePortMessageEvent<"settings-update-context-menu">
 ) {
   console.log(`Handling setting page message: ${message.type}`);
@@ -36,7 +36,7 @@ export async function onSettingsPagePortMessageReceived(
   );
 }
 
-export async function onPopupPortMessageReceived(
+export async function onPopupSenderMessageReceived(
   message: RuntimePortMessageEvent<"popup-update-append-text-option">
 ) {
   console.log(`Handling popup message: ${message.type}`);
@@ -47,7 +47,7 @@ export async function onPopupPortMessageReceived(
   console.log(`Popup append text option change triggered a storage data update`, newStorageData);
 }
 
-export async function onContentScriptPortMessageReceived(
+export async function onContentScriptSenderMessageReceived(
   message: RuntimePortMessageEvent<"content-script-text-selected">
 ) {
   console.log(`Handling content script message: ${message.type}`);

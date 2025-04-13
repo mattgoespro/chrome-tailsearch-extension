@@ -1,41 +1,42 @@
-export const ValidConnectionNames = ["background", "settings", "popup"] as const;
+export const ExtensionConnectionNames = ["settings", "popup"] as const;
 
-export const ActiveConnections: Record<string, chrome.runtime.Port> = {};
+export const Connections: Record<string, chrome.runtime.Port> = {};
 
-function isSupportedConnection(name: string): name is (typeof ValidConnectionNames)[number] {
-  return ValidConnectionNames.includes(name as (typeof ValidConnectionNames)[number]);
+/**
+ * Creates a connection ID from the active tab information, which is a
+ * combination of the window ID and tab ID in the case that multiple windows
+ * are open.
+ *
+ * @param activeInfo - The active tab information.
+ * @returns The connection ID.
+ */
+export function createConnectionId(activeInfo: chrome.tabs.TabActiveInfo) {
+  return `${activeInfo.windowId}-${activeInfo.tabId}`;
 }
 
 /**
  * Updates the connection for the given port.
  * @param connectionPort - The port to update.
  */
-export function registerConnection(connectionPort: chrome.runtime.Port) {
-  if (!isSupportedConnection(connectionPort.name)) {
-    console.warn(`Skipping update for unsupported connection '${connectionPort.name}'`);
+export function registerConnection(id: string, connection: chrome.runtime.Port) {
+  const existingConnection = Connections[id];
+
+  if (existingConnection != null) {
+    Connections[id] = connection;
+    console.log(`Updated connection for connection ID '${id}'.`);
     return;
   }
 
-  const connectionName = connectionPort.name;
+  console.log(`Adding new connection for ID '${id}'`);
 
-  if (ActiveConnections[connectionName] != null) {
-    console.log(
-      `Updating connection for port '${connectionName}' from sender '${connectionPort.sender?.id ?? "unknown"}'`
-    );
-    ActiveConnections[connectionName] = connectionPort;
-    return;
-  }
+  Connections[id] = connection;
 
-  console.log(`Adding new connection for supported port '${connectionName}'`);
-
-  ActiveConnections[connectionName] = connectionPort;
-
-  connectionPort.onDisconnect.addListener(() => {
-    console.log(`Background disconnected from port '${connectionName}'`);
-    delete ActiveConnections[connectionPort.name];
+  connection.onDisconnect.addListener(() => {
+    console.log(`Connection ID '${id}' closed.`);
+    delete Connections[id];
   });
 }
 
-export function hasConnection(name: string) {
-  return ActiveConnections[name] != null;
+export function hasConnection(id: string) {
+  return Connections[id] != null;
 }
