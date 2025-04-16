@@ -1,83 +1,119 @@
 import { createTheme } from "@mui/material";
-import { PaletteOptions } from "@mui/material/styles";
-
-const palette: PaletteOptions = {
-  mode: "dark",
-  primary: {
-    main: "#1976d2"
-  },
-  secondary: {
-    main: "#dc004e"
-  },
-  common: {
-    black: "#0e0e0e",
-    white: "#f0f0f0"
-  },
-  text: {
-    primary: "#e6e6e6",
-    secondary: "#525252"
-  },
-  background: {
-    default: "#121212",
-    paper: "#292929"
-  },
-  success: {
-    main: "#4caf50",
-    contrastText: "#e6e6e6"
-  },
-  warning: {
-    main: "#ff9800",
-    contrastText: "#e6e6e6"
-  },
-  error: {
-    main: "#f44336",
-    contrastText: "#e6e6e6"
-  }
-};
+import MuiCreateStyled from "@mui/system/createStyled";
 
 export const theme = createTheme({
-  palette,
-  typography: {
+  palette: {
+    mode: "dark",
+    common: {
+      black: "#1f1f1f",
+      white: "#f0f0f0"
+    },
+    primary: {
+      main: "#1976d2",
+      light: "#4791db",
+      dark: "#115293",
+      contrastText: "#fff"
+    },
+    secondary: {
+      main: "#dc004e",
+      light: "#e33371",
+      dark: "#9a0036",
+      contrastText: "#fff"
+    },
+    error: {
+      main: "#f44336",
+      light: "#e57373",
+      dark: "#d32f2f",
+      contrastText: "#fff"
+    },
+    warning: {
+      main: "#ff9800",
+      light: "#ffb74d",
+      dark: "#f57c00",
+      contrastText: "#fff"
+    },
+    info: {
+      main: "#2196f3",
+      light: "#64b5f6",
+      dark: "#1976d2",
+      contrastText: "#fff"
+    },
+    success: {
+      main: "#4caf50",
+      light: "#81c784",
+      dark: "#388e3c",
+      contrastText: "#fff"
+    },
+    text: {
+      primary: "#696969",
+      disabled: "#a9a9a9",
+      secondary: "#808080"
+    },
+    background: {
+      default: "#101010",
+      paper: "#1f1f1f"
+    }
+  },
+  typography: (palette) => ({
     fontFamily: "Roboto, sans-serif",
     fontSize: 14,
     h1: {
-      fontSize: "2.5em",
-      color: "#dee0e6",
-      fontWeight: 300,
-      fontFamily: "Nunito Sans, sans-serif",
-      textAlign: "center",
-      margin: "1.5rem"
+      fontFamily: "Open Sans, sans-serif",
+      fontSize: "2em",
+      fontWeight: 500,
+      color: palette.getContrastText(palette.background.paper),
+      margin: "0.5rem"
     },
     h2: {
+      fontSize: "1.5em",
+      fontWeight: 500,
+      color: palette.getContrastText(palette.background.paper),
+      margin: "0.5rem"
+    },
+    h3: {
       fontSize: "1.25em",
-      fontWeight: 500
-    },
-    subtitle1: {
-      fontSize: "1.125em"
-    },
-    body1: {
-      fontSize: "1rem"
+      fontWeight: 500,
+      color: palette.getContrastText(palette.background.paper),
+      margin: "0.5rem"
     },
     button: {
-      fontSize: "1em",
-      textTransform: "uppercase",
-      fontWeight: 500,
       fontFamily: "Nunito Sans, sans-serif",
-      letterSpacing: "0.125em"
+      fontSize: "0.875em",
+      fontWeight: 400,
+      textTransform: "uppercase"
     },
     overline: {
-      fontSize: "1em",
-      fontFamily: "Roboto, sans-serif",
+      fontSize: "0.75em",
+      fontWeight: 400,
       textTransform: "uppercase",
-      letterSpacing: "0.125em"
+      color: palette.text.secondary
+    },
+    body1: {
+      fontSize: "1em",
+      fontWeight: 400,
+      color: palette.text.primary
+    },
+    body2: {
+      fontSize: "0.875em",
+      fontFamily: "Nunito Sans, sans-serif",
+      fontWeight: 400,
+      color: palette.text.primary
+    },
+    caption: {
+      fontSize: "1em",
+      fontFamily: "Nunito Sans, sans-serif",
+      color: palette.text.primary,
+      marginBottom: "0.5rem"
     }
-  },
+  }),
   components: {
     MuiContainer: {
-      styleOverrides: {
-        root: {
-          margin: "2rem",
-          backgroundColor: "#111111"
+      defaultProps: {
+        sx: {
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center"
+          // flex: 1
         }
       }
     },
@@ -116,29 +152,18 @@ export const theme = createTheme({
       ]
     },
     MuiAutocomplete: {
-      variants: [
-        {
-          props: { color: "primary" },
-          style: {
-            backgroundColor: "#1d1d1d",
-            border: "1px solid #1976d2",
-            borderRadius: "4px",
-            "&:hover": {
-              borderColor: "#1976d2"
-            },
-            "&.Mui-focused": {
-              borderColor: "#1976d2",
-              boxShadow: "0 0 0 2px rgba(25, 118, 210, 0.2)"
-            }
-          }
-        }
-      ],
       defaultProps: {
+        size: "small",
         color: "primary"
       }
     }
   },
+  spacing: 2,
   shape: {
     borderRadius: 4
   }
+});
+
+export const createStyled = MuiCreateStyled({
+  defaultTheme: theme
 });

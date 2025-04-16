@@ -5,7 +5,7 @@ import FaviconsWebpackPlugin from "favicons-webpack-plugin";
 import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import TsConfigPathsWebpackPlugin from "tsconfig-paths-webpack-plugin";
-import { Configuration, DefinePlugin, EnvironmentPlugin, ProvidePlugin } from "webpack";
+import { Configuration, EnvironmentPlugin, ProvidePlugin } from "webpack";
 import { ExtensionReloader } from "webpack-ext-reloader";
 import MiniCssExtractWebpackPlugin from "mini-css-extract-plugin";
 import sass from "sass";
@@ -28,7 +28,7 @@ export default (_, env: { mode: "development" | "production" | "none" | undefine
     target: "web",
     mode,
     stats: "errors-warnings",
-    devtool: "cheap-module-source-map",
+    devtool: mode === "development" ? "cheap-module-source-map":false,
     entry: {
       background: path.join(__dirname, "src", "runtime", "background.ts"),
       "content-script": path.join(__dirname, "src", "content-script", "content-script.ts"),
@@ -65,12 +65,16 @@ export default (_, env: { mode: "development" | "production" | "none" | undefine
               options: {
                 implementation: sass,
                 sassOptions: {
-                  includePaths: []
+                  includePaths: [
+                    path.resolve("src", "renderer", "popup"),
+                    path.resolve("src", "renderer", "options")
+                  ]
                 }
               }
             },
             "postcss-loader"
           ],
+          include: [path.resolve(__dirname, "src")],
           exclude: /node_modules/
         },
         {
@@ -87,14 +91,20 @@ export default (_, env: { mode: "development" | "production" | "none" | undefine
             },
             "postcss-loader"
           ],
+          include: [path.resolve(__dirname, "src")],
           exclude: /node_modules/
         },
         {
           test: /\.[tj]sx?$/,
           loader: "babel-loader",
+          include: [path.resolve(__dirname, "src")],
           exclude: /node_modules/
         }
       ]
+    },
+    cache: {
+      type: "filesystem",
+      cacheDirectory: path.resolve(__dirname, ".buildcache")
     },
     plugins: [
       new EnvironmentPlugin({

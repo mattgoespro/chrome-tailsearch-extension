@@ -20,6 +20,7 @@
     "mrmlnc.vscode-scss",
     "yoavbls.pretty-ts-errors",
     "amodio.tsl-problem-matcher",
-    "naumovs.color-highlight"
+    "naumovs.color-highlight",
+    "eamodio.gitlens"
   ]
 }

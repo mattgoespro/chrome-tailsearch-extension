@@ -27,15 +27,6 @@
     "32": "assets/favicon-32x32.png",
     "48": "assets/favicon-48x48.png"
   },
-  "commands": {
-    "default_title": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+S",
-        "mac": "Command+Shift+S"
-      },
-      "description": "Chrome extension to search Google with an appended text string to the current selection."
-    }
-  },
   "options_page": "settings.html",
   "permissions": ["contextMenus", "scripting", "storage", "tabs", "activeTab"],
   "host_permissions": ["https://*/*", "http://*/*"],

@@ -1,80 +1,56 @@
-import { useContext, useRef } from "react";
-import { updateChromeStorageData } from "../../../shared/storage";
-import { RuntimePortMessageEvent } from "../../../shared/message-event";
 import { useStorage } from "../../shared/hooks/use-storage";
-import { PortContext } from "../../shared/contexts/port-context";
-import { TailsearchTermSelect } from "../../shared/components/tailsearch-term-select/tailsearch-term-select";
-import Button from "@mui/material/Button";
+import { TailsearchTermInput } from "../../shared/components/tailsearch-term-input/tailsearch-term-input";
 import FormGroup from "@mui/material/FormGroup";
-import { Container, IconButton, Typography } from "@mui/material";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { uuid } from "../../../shared/uuid";
+import { FormHelperText } from "@mui/material";
 
 export function Settings() {
   const [storage] = useStorage();
-  const port = useContext(PortContext);
-
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  function handleOnSave() {
-    const newValue = (inputRef.current.value ?? "").trim();
-    const searchTerm = newValue?.length > 0 ? newValue : null;
-
-    updateChromeStorageData({ searchTerm }).then(() => {
-      alert("Saved settings.");
-
-      const msg: RuntimePortMessageEvent<"settings-update-context-menu"> = {
-        source: "settings",
-        type: "settings-update-context-menu"
-      };
-      port.postMessage(msg);
-    });
-  }
-
   return (
     <Container
       sx={{
         display: "flex",
-        flex: 1,
         flexDirection: "column",
         justifyContent: "center",
-        alignItems: "center"
+        flex: 1
       }}
     >
-      <Typography variant="h1" sx={{ marginBottom: 2 }}>
+      <Typography variant="h1" sx={{ textAlign: "center", marginBottom: 2 }}>
         Tailsearch Settings
       </Typography>
       {(!storage.error && (
-        <Container
-          sx={{ display: "flex", flexDirection: "column", justifyContent: "center", gap: 2 }}
-        >
-          <Typography variant="overline" color="text.primary">
-            Search Term
-          </Typography>
+        <Container maxWidth="sm">
           <FormGroup>
-            <TailsearchTermSelect />
+            <FormHelperText required>Search Term</FormHelperText>
+            <TailsearchTermInput messageName="settings-update-search-term" />
           </FormGroup>
-          <Button
-            variant="contained"
-            type="submit"
-            disabled={storage.loading}
-            onClick={handleOnSave}
-          >
-            Save
-          </Button>
         </Container>
       )) || (
         <Typography color="error" variant="overline">
           Error: {storage.error.message}
         </Typography>
       )}
-      <List></List>
-      {storage.data.options?.length > 0 &&
-        storage.data.options.map((option) => (
-          <ListItem dense secondaryAction={<IconButton>delete</IconButton>}>
-            {option}
-          </ListItem>
-        ))}
+      <List dense>
+        {storage.data.options?.length > 0 &&
+          storage.data.options.map((option) => (
+            <ListItem
+              key={uuid()}
+              secondaryAction={
+                <IconButton>
+                  <DeleteIcon />
+                </IconButton>
+              }
+            >
+              <Typography variant="body1">{option}</Typography>
+            </ListItem>
+          ))}
+      </List>
     </Container>
   );
 }

@@ -26,7 +26,12 @@ import { theme } from "../shared/theme/theme";
 
   createRoot(root).render(
     <ThemeProvider theme={theme}>
-      <PortContext.Provider value={port}>
+      <PortContext.Provider
+        value={{
+          source: "popup",
+          port
+        }}
+      >
         <QueryClientProvider client={client}>
           <ActionPopup />
         </QueryClientProvider>

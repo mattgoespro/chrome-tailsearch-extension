@@ -8,43 +8,56 @@ import {
 } from "../context-menu";
 
 export async function onSettingsPagePortMessageReceived(
-  message: RuntimePortMessageEvent<"settings-update-context-menu">
+  message: RuntimePortMessageEvent<"settings-update-search-term">
 ) {
   console.log(`Handling setting page message: ${message.type}`);
-  const { searchTerm: appendText, pageSelectedText: selectedText } = await getChromeStorageData();
 
-  if (appendText == null) {
-    await updateContextMenu(ContextMenuOptionId, {
-      title: ContextMenuOptionDisabledOptionLabel,
-      enabled: false
-    });
-    console.warn(
-      "The text to append was unset from the settings page, disabling context menu option."
-    );
-    return;
+  switch (message.type) {
+    case "settings-update-search-term": {
+      const { searchTerm } = message.data;
+
+      if (searchTerm == null) {
+        await updateContextMenu(ContextMenuOptionId, {
+          title: ContextMenuOptionDisabledOptionLabel,
+          enabled: false
+        });
+        console.warn(
+          "The text to append was unset from the settings page, disabling context menu option."
+        );
+        return;
+      }
+
+      const { pageSelectedText } = await getChromeStorageData();
+
+      const menuOptionTitle = getContextMenuOptionTitle(pageSelectedText, searchTerm);
+
+      await updateContextMenu(ContextMenuOptionId, {
+        title: menuOptionTitle,
+        enabled: true
+      });
+
+      console.log(
+        `Settings change triggered a context menu option title update -> '${menuOptionTitle}'`
+      );
+    }
   }
-
-  const menuOptionTitle = getContextMenuOptionTitle(selectedText, appendText);
-
-  await updateContextMenu(ContextMenuOptionId, {
-    title: menuOptionTitle,
-    enabled: true
-  });
-
-  console.log(
-    `Settings change triggered a context menu option title update -> '${menuOptionTitle}'`
-  );
 }
 
 export async function onPopupPortMessageReceived(
-  message: RuntimePortMessageEvent<"popup-update-append-text-option">
+  message: RuntimePortMessageEvent<"popup-update-search-term">
 ) {
   console.log(`Handling popup message: ${message.type}`);
 
-  const selectedOption = message.data.appendText;
+  switch (message.type) {
+    case "popup-update-search-term": {
+      const newStorageData = await updateChromeStorageData({ searchTerm: message.data.searchTerm });
 
-  const newStorageData = await updateChromeStorageData({ searchTerm: selectedOption });
-  console.log(`Popup append text option change triggered a storage data update`, newStorageData);
+      console.log(
+        `Popup search term option change triggered a storage data update`,
+        newStorageData
+      );
+    }
+  }
 }
 
 export async function onContentScriptPortMessageReceived(

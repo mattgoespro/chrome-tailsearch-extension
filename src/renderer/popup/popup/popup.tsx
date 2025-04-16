@@ -1,22 +1,38 @@
-import { TailsearchOptions } from "./tailsearch-options/tailsearch-options";
-import * as styles from "./popup.module.scss";
 import { useStorage } from "../../shared/hooks/use-storage";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
+import Link from "@mui/material/Link";
+import { TailsearchTermInput } from "../../shared/components/tailsearch-term-input/tailsearch-term-input";
+import Box from "@mui/material/Box";
 
 export function ActionPopup() {
   const [storage] = useStorage();
 
   return (
-    <div className={styles["popup"]}>
-      <div className={styles["heading"]}>Appended Text Search</div>
-      <div className={styles["content"]}>
-        {storage.loading && <div>Loading...</div>}
-        {storage.error && <div>Error: {storage.error.message}</div>}
-        {(!storage.error && storage.data.options?.length > 0 && <TailsearchOptions />) || (
-          <a className={styles["settings-nav"]} href="/settings.html" target="_blank">
-            Open settings to add more tailsearch options.
-          </a>
+    <Container>
+      <Typography variant="h3" textAlign="center">
+        Quick Select Search Term
+      </Typography>
+      <Container
+        sx={{ display: "flex", flexDirection: "column", justifyContent: "center", flex: 1 }}
+      >
+        {storage.loading && <Typography variant="body1">Loading...</Typography>}
+        {storage.error && <Typography variant="body1">Error: {storage.error.message}</Typography>}
+        {!storage.error && storage.data.options?.length > 0 && (
+          <TailsearchTermInput messageName="popup-update-search-term" />
         )}
-      </div>
-    </div>
+        <Box marginTop={4}>
+          <Link
+            variant="button"
+            underline="hover"
+            href="/settings.html"
+            target="_blank"
+            textTransform="none"
+          >
+            Open Settings to add or remove options.
+          </Link>
+        </Box>
+      </Container>
+    </Container>
   );
 }

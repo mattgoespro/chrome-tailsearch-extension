@@ -3,15 +3,20 @@ import { RuntimePortMessageEvent, RuntimePortMessageType } from "../../../shared
 import { PortContext } from "../contexts/port-context";
 
 export function usePort() {
-  const port = useContext(PortContext);
+  const { port, source } = useContext(PortContext);
 
   // throw error if port is disconnected
   if (port == null) {
-    throw new Error("Port is not connected");
+    throw new Error("Cannot use a disconnected port.");
   }
 
-  function postMessage<T extends RuntimePortMessageType>(msg: RuntimePortMessageEvent<T>) {
-    port.postMessage(msg);
+  function postMessage<T extends RuntimePortMessageType>(
+    msg: Omit<RuntimePortMessageEvent<T>, "source">
+  ) {
+    port.postMessage({
+      ...msg,
+      source
+    });
   }
 
   return {

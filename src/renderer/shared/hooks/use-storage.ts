@@ -23,11 +23,7 @@ export function useStorage(): [
     error
   } = useQuery<TailsearchStorage, Error, TailsearchStorage>({
     queryKey: [TailsearchChromeStorageKey],
-    queryFn: getChromeStorageData,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    refetchInterval: false,
-    retry: false
+    queryFn: getChromeStorageData
   });
 
   return [

@@ -23,7 +23,12 @@ import { theme } from "../shared/theme/theme";
 
   createRoot(root).render(
     <ThemeProvider theme={theme}>
-      <PortContext.Provider value={port}>
+      <PortContext.Provider
+        value={{
+          source: "settings",
+          port
+        }}
+      >
         <QueryClientProvider client={client}>
           <Settings />
         </QueryClientProvider>
