@@ -7,33 +7,12 @@ export type TailsearchStorage = {
 };
 
 export async function getChromeStorageData(): Promise<TailsearchStorage> {
-  return new Promise((resolve, reject) => {
-    chrome.storage.sync.get(null, (items) => {
-      if (chrome.runtime.lastError) {
-        reject(new Error(chrome.runtime.lastError.message));
-        return;
-      }
-
-      resolve(items as TailsearchStorage);
-    });
-  });
+  return chrome.storage.sync.get<TailsearchStorage>();
 }
 
 export async function updateChromeStorageData(
   value: Partial<TailsearchStorage>
 ): Promise<TailsearchStorage> {
-  const currentStorage = await getChromeStorageData();
-  await chrome.storage.sync.set({
-    ...currentStorage,
-    ...value
-  });
-
+  await chrome.storage.sync.set<TailsearchStorage>({ ...value });
   return getChromeStorageData();
 }
-
-export type TailsearchStorageDataChange<T extends Record<string, unknown>> = {
-  [K in keyof T]: {
-    oldValue: T[K];
-    newValue: T[K];
-  };
-};

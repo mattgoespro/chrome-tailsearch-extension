@@ -28,7 +28,7 @@ export function Settings() {
         <Container maxWidth="sm">
           <FormGroup>
             <FormHelperText required>Search Term</FormHelperText>
-            <TailsearchTermInput messageName="settings-update-search-term" />
+            <TailsearchTermInput />
           </FormGroup>
         </Container>
       )) || (

@@ -18,9 +18,7 @@ export function ActionPopup() {
       >
         {storage.loading && <Typography variant="body1">Loading...</Typography>}
         {storage.error && <Typography variant="body1">Error: {storage.error.message}</Typography>}
-        {!storage.error && storage.data.options?.length > 0 && (
-          <TailsearchTermInput messageName="popup-update-search-term" />
-        )}
+        {!storage.error && storage.data?.options?.length > 0 && <TailsearchTermInput />}
         <Box marginTop={4}>
           <Link
             variant="button"

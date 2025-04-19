@@ -14,13 +14,13 @@
     "dsznajder.es7-react-js-snippets",
     "formulahendry.auto-rename-tag",
     "nyxb.vscode-styled-colors",
-    "pkief.material-icon-theme",
     "meganrogge.template-string-converter",
     "sibiraj-s.vscode-scss-formatter",
     "mrmlnc.vscode-scss",
     "yoavbls.pretty-ts-errors",
     "amodio.tsl-problem-matcher",
     "naumovs.color-highlight",
-    "eamodio.gitlens"
+    "eamodio.gitlens",
+    "helgardrichard.helium-icon-theme"
   ]
 }

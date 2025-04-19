@@ -2,29 +2,50 @@ import { useQuery } from "@tanstack/react-query";
 import {
   getChromeStorageData,
   TailsearchChromeStorageKey,
-  TailsearchStorage,
-  updateChromeStorageData
+  TailsearchStorage
 } from "@shared/storage";
-import { Dispatch, SetStateAction } from "react";
+import { useContext } from "react";
+import { PortContext } from "../contexts/port-context";
+import { RuntimePortMessageType } from "../../../shared/message-event";
 
-type TailsearchStorageResult = {
+type TailsearchStorageQueryResult = {
   data: TailsearchStorage;
   loading?: boolean;
-  error?: Error | null;
+  error?: Error;
 };
 
-export function useStorage(): [
-  TailsearchStorageResult,
-  Dispatch<SetStateAction<TailsearchStorage>>
-] {
+type TailsearchStorageSendMessageFn = (
+  type: RuntimePortMessageType,
+  message: Partial<TailsearchStorage>
+) => void;
+
+export function useStorage(): [TailsearchStorageQueryResult, TailsearchStorageSendMessageFn] {
+  const { port, source } = useContext(PortContext);
+
   const {
     data,
     isLoading: loading,
     error
-  } = useQuery<TailsearchStorage, Error, TailsearchStorage>({
+  } = useQuery({
     queryKey: [TailsearchChromeStorageKey],
-    queryFn: getChromeStorageData
+    queryFn: getChromeStorageData,
+    behavior: {
+      onFetch: () => {
+        console.log("Fetching data from Chrome storage...");
+      }
+    }
   });
+
+  const sendStorageUpdateMessage: TailsearchStorageSendMessageFn = (
+    type: RuntimePortMessageType,
+    message: Partial<TailsearchStorage>
+  ) => {
+    port.postMessage({
+      source,
+      type,
+      data: message
+    });
+  };
 
   return [
     {
@@ -32,6 +53,6 @@ export function useStorage(): [
       loading,
       error
     },
-    updateChromeStorageData
+    sendStorageUpdateMessage
   ];
 }

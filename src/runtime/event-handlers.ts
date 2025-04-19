@@ -20,7 +20,7 @@ export async function onInstalled() {
   const { EXTENSION_STORAGE_INITIAL_DATA } = process.env;
 
   if (EXTENSION_STORAGE_INITIAL_DATA != null) {
-    const initialData = JSON.parse(EXTENSION_STORAGE_INITIAL_DATA);
+    const initialData = { ...JSON.parse(EXTENSION_STORAGE_INITIAL_DATA) };
 
     await updateChromeStorageData(initialData);
 

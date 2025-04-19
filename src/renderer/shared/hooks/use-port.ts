@@ -11,11 +11,13 @@ export function usePort() {
   }
 
   function postMessage<T extends RuntimePortMessageType>(
-    msg: Omit<RuntimePortMessageEvent<T>, "source">
+    type: T,
+    message: Omit<RuntimePortMessageEvent<T>, "source" | "type">
   ) {
     port.postMessage({
-      ...msg,
-      source
+      source,
+      type,
+      ...message
     });
   }
 
