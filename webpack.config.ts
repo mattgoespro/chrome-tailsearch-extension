@@ -24,15 +24,19 @@ export default (_, env: { mode: "development" | "production" | "none" | undefine
     );
   }
 
+  const srcDir = path.resolve(__dirname, "src");
+  const runtimeDor = path.join(srcDir, "runtime");
+  const rendererDir = path.join(srcDir, "renderer");
+
   return {
     target: "web",
     mode,
     stats: "errors-warnings",
-    devtool: mode === "development" ? "cheap-module-source-map":false,
+    devtool: mode === "development" ? "cheap-module-source-map" : false,
     entry: {
       background: path.join(__dirname, "src", "runtime", "background.ts"),
       "content-script": path.join(__dirname, "src", "content-script", "content-script.ts"),
-      settings: path.join(__dirname, "src", "renderer", "options", "index.tsx"),
+      options: path.join(__dirname, "src", "renderer", "options", "index.tsx"),
       popup: path.join(__dirname, "src", "renderer", "popup", "index.tsx")
     },
     output: {
@@ -49,32 +53,9 @@ export default (_, env: { mode: "development" | "production" | "none" | undefine
     module: {
       rules: [
         {
-          test: /\.scss$/,
-          use: [
-            MiniCssExtractWebpackPlugin.loader,
-            {
-              loader: "css-loader",
-              options: {
-                modules: {
-                  localIdentName: "[name]__[local]___[hash:base64:5]"
-                }
-              }
-            },
-            {
-              loader: "sass-loader",
-              options: {
-                implementation: sass,
-                sassOptions: {
-                  includePaths: [
-                    path.resolve("src", "renderer", "popup"),
-                    path.resolve("src", "renderer", "options")
-                  ]
-                }
-              }
-            },
-            "postcss-loader"
-          ],
-          include: [path.resolve(__dirname, "src")],
+          test: /\.[tj]sx?$/,
+          loader: "babel-loader",
+          include: srcDir,
           exclude: /node_modules/
         },
         {
@@ -91,13 +72,7 @@ export default (_, env: { mode: "development" | "production" | "none" | undefine
             },
             "postcss-loader"
           ],
-          include: [path.resolve(__dirname, "src")],
-          exclude: /node_modules/
-        },
-        {
-          test: /\.[tj]sx?$/,
-          loader: "babel-loader",
-          include: [path.resolve(__dirname, "src")],
+          include: srcDir,
           exclude: /node_modules/
         }
       ]
@@ -120,20 +95,18 @@ export default (_, env: { mode: "development" | "production" | "none" | undefine
         filename: "css/[name].css"
       }),
       new HtmlWebpackPlugin({
-        filename: "settings.html",
-        template: path.join(__dirname, "public", "settings.html"),
+        filename: "options.html",
+        template: path.join(rendererDir, "options", "index.html"),
         inject: "body",
-        chunks: ["settings"],
-        scriptLoading: "defer",
-        hash: false
+        chunks: ["options"],
+        scriptLoading: "defer"
       }),
       new HtmlWebpackPlugin({
         filename: "popup.html",
-        template: path.join(__dirname, "public", "popup.html"),
+        template: path.join(rendererDir, "popup", "index.html"),
         inject: "body",
         chunks: ["popup"],
-        scriptLoading: "defer",
-        hash: false
+        scriptLoading: "defer"
       }),
       new ForkTsCheckerWebpackPlugin({
         formatter: (issue: Issue) => {
@@ -144,7 +117,7 @@ export default (_, env: { mode: "development" | "production" | "none" | undefine
       new CopyWebpackPlugin({
         patterns: [
           {
-            from: path.join(__dirname, "public", "manifest.json"),
+            from: path.join(srcDir, "manifest.json"),
             to: path.join(__dirname, "dist"),
             transform: (content) => {
               const manifest = JSON.parse(content.toString());
@@ -155,7 +128,7 @@ export default (_, env: { mode: "development" | "production" | "none" | undefine
         ]
       }),
       new FaviconsWebpackPlugin({
-        logo: path.join(__dirname, "public", "assets", "logo.png"),
+        logo: path.join(srcDir, "assets", "logo.png"),
         mode: "webapp",
         favicons: {
           icons: {
@@ -172,7 +145,7 @@ export default (_, env: { mode: "development" | "production" | "none" | undefine
         ? new ExtensionReloaderWebpackPlugin({
             port: 9090,
             reloadPage: true,
-            manifest: path.join(__dirname, "public", "manifest.json"),
+            manifest: path.join(srcDir, "manifest.json"),
             entries: {
               background: "background",
               manifest: "manifest",

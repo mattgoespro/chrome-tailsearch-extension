@@ -64,7 +64,6 @@
       "path": "C:\\Program Files\\Git\\bin\\bash.exe"
     }
   },
-  "typescript.experimental.updateImportsOnPaste": true,
   "typescript.format.enable": false,
   "typescript.preferences.importModuleSpecifier": "relative",
   "typescript.suggest.autoImports": true,
