@@ -4,7 +4,7 @@ type RuntimePortMessagePayloads = {
   "remove-search-term-option": { searchTerm: string };
 };
 
-const RuntimePortMessageSources = ["content-script", "settings", "popup"] as const;
+const RuntimePortMessageSources = ["content-script", "options", "popup"] as const;
 
 export type RuntimePortMessageSource = (typeof RuntimePortMessageSources)[number];
 

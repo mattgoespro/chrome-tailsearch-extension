@@ -26,7 +26,7 @@ async function updateExtensionStateForSearchTerm(searchTerm: string) {
   });
 }
 
-export async function onSettingsPagePortMessageReceived(
+export async function onSettingsPageMessageReceived(
   message: RuntimePortMessageEvent<"set-current-search-term-option" | "remove-search-term-option">
 ) {
   console.log(`Handling setting page message: ${message.type}`);
@@ -38,33 +38,40 @@ export async function onSettingsPagePortMessageReceived(
       break;
     }
     case "remove-search-term-option": {
-      const currentData = await getChromeStorageData();
-      const options = currentData.searchTermOptions ?? [];
-      const updatedOptions = options.filter((option) => option !== message.data.searchTerm);
-      const updatedStorageData = await updateChromeStorageData({
-        searchTermOptions: updatedOptions
-      });
-      console.log("Updated extension state for search term options:", updatedStorageData);
-      if (updatedStorageData.currentSearchTermOption === message.data.searchTerm) {
-        await disableContextMenuOption();
-        console.warn(
-          "The search term was unset from the settings page and the context menu option was disabled."
-        );
-      }
+      await removeSearchTermOption(message.data.searchTerm);
       break;
     }
   }
 }
 
-export async function onPopupPortMessageReceived(
-  message: RuntimePortMessageEvent<"set-current-search-term-option">
+async function removeSearchTermOption(option: string) {
+  const currentData = await getChromeStorageData();
+  const options = currentData.searchTermOptions ?? [];
+  const updatedOptions = options.filter((opt) => opt !== option);
+  const updatedStorageData = await updateChromeStorageData({
+    searchTermOptions: updatedOptions
+  });
+
+  if (updatedStorageData.currentSearchTermOption === option) {
+    await disableContextMenuOption();
+    console.warn(
+      "The search term was unset from the settings page and the context menu option was disabled."
+    );
+  }
+}
+
+export async function onPopupPageMessageReceived(
+  message: RuntimePortMessageEvent<"set-current-search-term-option" | "remove-search-term-option">
 ) {
   console.log(`Handling popup message: ${message.type}`);
 
   switch (message.type) {
     case "set-current-search-term-option": {
       await updateExtensionStateForSearchTerm(message.data.searchTerm);
-      console.log("Updated extension state for search term:", message.data.searchTerm);
+      break;
+    }
+    case "remove-search-term-option": {
+      await removeSearchTermOption(message.data.searchTerm);
       break;
     }
   }

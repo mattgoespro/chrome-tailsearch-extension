@@ -1,8 +1,8 @@
 import { updateChromeStorageData } from "../../../shared/storage";
 import {
   onContentScriptPortMessageReceived,
-  onSettingsPagePortMessageReceived,
-  onPopupPortMessageReceived
+  onSettingsPageMessageReceived,
+  onPopupPageMessageReceived
 } from "./message-handlers";
 import { onActionClicked } from "../component-handlers/action-handler";
 import {
@@ -45,12 +45,12 @@ export async function onReceivedConnection(port: chrome.runtime.Port) {
     case "content-script":
       port.onMessage.addListener(onContentScriptPortMessageReceived);
       break;
-    case "settings": {
-      port.onMessage.addListener(onSettingsPagePortMessageReceived);
+    case "options": {
+      port.onMessage.addListener(onSettingsPageMessageReceived);
       break;
     }
     case "popup":
-      port.onMessage.addListener(onPopupPortMessageReceived);
+      port.onMessage.addListener(onPopupPageMessageReceived);
       break;
     default:
       console.warn(`Unknown port '${port.name}'!`);

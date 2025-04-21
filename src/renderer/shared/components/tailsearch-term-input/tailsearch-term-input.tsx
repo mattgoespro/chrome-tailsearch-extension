@@ -7,7 +7,6 @@ import { usePort } from "../../hooks/use-port";
 export function TailsearchTermInput() {
   const { data, loading, error } = useStorage();
   const { postMessage } = usePort();
-  console.log("Data", data);
 
   function onValueChange(_event: React.SyntheticEvent, value: string) {
     postMessage("set-current-search-term-option", {
@@ -22,7 +21,7 @@ export function TailsearchTermInput() {
       <Autocomplete
         size="small"
         color="secondary"
-        value={data?.currentSearchTermOption}
+        value={data?.currentSearchTermOption ?? null}
         loading={loading}
         loadingText="Loading..."
         options={!loading && data.searchTermOptions != null ? data.searchTermOptions : []}
