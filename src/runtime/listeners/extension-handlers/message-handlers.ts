@@ -1,18 +1,15 @@
-import { RuntimePortMessageEvent } from "../../shared/message-event";
-import { getChromeStorageData, updateChromeStorageData } from "../../shared/storage";
+import { RuntimePortMessageEvent } from "../../../shared/message-event";
+import { getChromeStorageData, updateChromeStorageData } from "../../../shared/storage";
 import {
   updateContextMenu,
-  ContextMenuOptionId,
+  TailSearchContextMenuOptionId,
   getContextMenuOptionTitle,
-  ContextMenuOptionDisabledOptionLabel
-} from "../context-menu";
+  disableContextMenuOption
+} from "../../components/context-menu";
 
 async function updateExtensionStateForSearchTerm(searchTerm: string) {
   if (searchTerm == null) {
-    await updateContextMenu(ContextMenuOptionId, {
-      title: ContextMenuOptionDisabledOptionLabel,
-      enabled: false
-    });
+    await disableContextMenuOption();
     console.warn(
       "The text to append was unset from the settings page, disabling context menu option."
     );
@@ -23,7 +20,7 @@ async function updateExtensionStateForSearchTerm(searchTerm: string) {
     currentSearchTermOption: searchTerm
   });
 
-  await updateContextMenu(ContextMenuOptionId, {
+  await updateContextMenu(TailSearchContextMenuOptionId, {
     title: getContextMenuOptionTitle(updatedData.pageSelectedText, searchTerm),
     enabled: true
   });
@@ -49,11 +46,10 @@ export async function onSettingsPagePortMessageReceived(
       });
       console.log("Updated extension state for search term options:", updatedStorageData);
       if (updatedStorageData.currentSearchTermOption === message.data.searchTerm) {
-        await updateContextMenu(ContextMenuOptionId, {
-          title: ContextMenuOptionDisabledOptionLabel,
-          enabled: false
-        });
-        console.warn("The search term was unset, disabling context menu option.");
+        await disableContextMenuOption();
+        console.warn(
+          "The search term was unset from the settings page and the context menu option was disabled."
+        );
       }
       break;
     }
@@ -87,11 +83,10 @@ export async function onContentScriptPortMessageReceived(
       });
 
       if (updatedStorageData.currentSearchTermOption == null) {
-        await updateContextMenu(ContextMenuOptionId, {
-          title: ContextMenuOptionDisabledOptionLabel,
-          enabled: false
-        });
-        console.warn("The search term was unset, disabling context menu option.");
+        await disableContextMenuOption();
+        console.warn(
+          "The search term has been unset from somewhere, so the context menu option was disabled."
+        );
         return;
       }
 
@@ -100,7 +95,7 @@ export async function onContentScriptPortMessageReceived(
         updatedStorageData.currentSearchTermOption
       );
 
-      await updateContextMenu(ContextMenuOptionId, {
+      await updateContextMenu(TailSearchContextMenuOptionId, {
         title: menuOptionTitle,
         enabled: true
       });

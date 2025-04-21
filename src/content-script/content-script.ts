@@ -9,20 +9,19 @@ function log(...args: unknown[]) {
 document.addEventListener("mouseup", () => {
   const selectedText = document.getSelection().toString();
 
-  if (selectedText == null || selectedText.trim() === "") {
+  if ((selectedText ?? "").trim().length === 0) {
     return;
   }
 
   const textSelectedMessage: RuntimePortMessageEvent<"content-script-text-selected"> = {
     type: "content-script-text-selected",
     source: "content-script",
-    data: { selectedText: selectedText }
+    data: { selectedText }
   };
 
   log(
     `Selected text: ${selectedText}`,
-    `Sending message through port ${port.name}: `,
-    textSelectedMessage
+    `Sending selected text '${textSelectedMessage}' to extension through port name ${port.name}: `
   );
 
   port.postMessage(textSelectedMessage);

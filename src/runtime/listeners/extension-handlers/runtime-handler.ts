@@ -1,22 +1,27 @@
-import { ContextMenuOptionDisabledOptionLabel, getContextMenuOptionTitle } from "./context-menu";
-import { updateChromeStorageData } from "../shared/storage";
-import { ContextMenuOptionId } from "./context-menu";
+import { updateChromeStorageData } from "../../../shared/storage";
 import {
   onContentScriptPortMessageReceived,
-  onPopupPortMessageReceived,
-  onSettingsPagePortMessageReceived
-} from "./port/message-handlers";
-import { onActionClicked } from "./action";
+  onSettingsPagePortMessageReceived,
+  onPopupPortMessageReceived
+} from "./message-handlers";
+import { onActionClicked } from "../component-handlers/action-handler";
+import {
+  TailSearchContextMenuOptionId,
+  TailSearchContextMenuOptionDisabledOptionLabel,
+  getContextMenuOptionTitle
+} from "../../components/context-menu";
 
 export async function onInstalled() {
   const contextMenuCreateProps: chrome.contextMenus.CreateProperties = {
-    id: ContextMenuOptionId,
-    title: ContextMenuOptionDisabledOptionLabel,
+    id: TailSearchContextMenuOptionId,
+    title: TailSearchContextMenuOptionDisabledOptionLabel,
     enabled: false,
     contexts: ["selection"]
   };
 
-  // Set default data on install
+  /**
+   * When debugging, store the initial data from the environment in sync storage.
+   */
   const { EXTENSION_STORAGE_INITIAL_DATA } = process.env;
 
   if (EXTENSION_STORAGE_INITIAL_DATA != null) {
