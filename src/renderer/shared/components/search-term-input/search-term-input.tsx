@@ -4,7 +4,7 @@ import TextField from "@mui/material/TextField";
 import { useStorage } from "../../hooks/use-storage";
 import { usePort } from "../../hooks/use-port";
 
-export function TailsearchTermInput() {
+export function SearchTermInput() {
   const { data, loading, error } = useStorage();
   const { postMessage } = usePort();
 
@@ -19,8 +19,6 @@ export function TailsearchTermInput() {
   return (
     <FormControl required>
       <Autocomplete
-        size="small"
-        color="secondary"
         value={data?.currentSearchTermOption ?? null}
         loading={loading}
         loadingText="Loading..."
@@ -28,7 +26,7 @@ export function TailsearchTermInput() {
         noOptionsText={error != null ? error.message : "No options"}
         onChange={onValueChange}
         renderInput={(params) => (
-          <TextField color="secondary" size="small" {...params} label={undefined} />
+          <TextField {...params} color="primary" size="small" label={undefined} />
         )}
       />
     </FormControl>

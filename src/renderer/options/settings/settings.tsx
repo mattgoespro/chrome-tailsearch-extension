@@ -1,7 +1,6 @@
 import { useStorage } from "../../shared/hooks/use-storage";
-import { TailsearchTermInput } from "../../shared/components/tailsearch-term-input/tailsearch-term-input";
+import { SearchTermInput } from "../../shared/components/search-term-input/search-term-input";
 import FormGroup from "@mui/material/FormGroup";
-import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
@@ -11,6 +10,7 @@ import { uuid } from "../../../shared/uuid";
 import { FormHelperText } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { usePort } from "../../shared/hooks/use-port";
+import { FlexColumn } from "../../shared/components/flex-column";
 
 export function Settings() {
   const { data, loading, error } = useStorage();
@@ -23,18 +23,15 @@ export function Settings() {
       }
     });
   }
+
   return (
-    <Container maxWidth="sm">
-      <Typography variant="h1" sx={{ textAlign: "center", marginBottom: 2 }}>
-        TailSearch Settings
-      </Typography>
+    <FlexColumn maxWidth="sm">
+      <Typography variant="h1">TailSearch Settings</Typography>
       {(error == null && (
-        <Container maxWidth="sm">
-          <FormGroup>
-            <FormHelperText required>Search Term</FormHelperText>
-            <TailsearchTermInput />
-          </FormGroup>
-        </Container>
+        <FormGroup>
+          <FormHelperText required>Search Term</FormHelperText>
+          <SearchTermInput />
+        </FormGroup>
       )) || (
         <Typography color="error" variant="overline">
           Error: {error.message}
@@ -43,7 +40,7 @@ export function Settings() {
       {!loading && data.searchTermOptions?.length > 0 && (
         <List dense>
           {data.searchTermOptions.map((option) => (
-            <Paper elevation={1} key={uuid()} sx={{ marginBottom: 1 }}>
+            <Paper elevation={2} key={uuid()}>
               <ListItem
                 secondaryAction={
                   <IconButton size="small" edge="end" onClick={handleDeleteOption} value={option}>
@@ -57,6 +54,6 @@ export function Settings() {
           ))}
         </List>
       )}
-    </Container>
+    </FlexColumn>
   );
 }

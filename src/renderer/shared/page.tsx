@@ -6,9 +6,9 @@ import { queryClient } from "./hooks/query-client";
 import { theme } from "./theme/theme";
 import { TailsearchChromeStorageKey } from "../../shared/storage";
 import { RuntimePortMessageSource } from "../../shared/message-event";
-import { Settings } from "../options/settings/settings";
+import { ReactNode } from "react";
 
-export function createPage(source: RuntimePortMessageSource) {
+export function createPage(source: RuntimePortMessageSource, page: ReactNode) {
   const root = document.getElementById("root");
 
   chrome.storage.onChanged.addListener(() => {
@@ -28,9 +28,7 @@ export function createPage(source: RuntimePortMessageSource) {
           port: chrome.runtime.connect({ name: source })
         }}
       >
-        <QueryClientProvider client={queryClient}>
-          <Settings />
-        </QueryClientProvider>
+        <QueryClientProvider client={queryClient}>{page}</QueryClientProvider>
       </PortContext.Provider>
     </ThemeProvider>
   );

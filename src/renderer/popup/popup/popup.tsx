@@ -1,21 +1,21 @@
-import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
-import { TailsearchTermInput } from "../../shared/components/tailsearch-term-input/tailsearch-term-input";
+import { SearchTermInput } from "../../shared/components/search-term-input/search-term-input";
 import Box from "@mui/material/Box";
 import { FlexColumn } from "../../shared/components/flex-column";
 
 export function ActionPopup() {
   return (
-    <Container>
+    <FlexColumn>
       <Typography variant="h3" textAlign="center">
         Quick Select Search Term
       </Typography>
       <FlexColumn centerHorizontal>
-        <TailsearchTermInput />
+        <SearchTermInput />
         <Box marginTop={4}>
           <Link
             variant="button"
+            fontSize="1em"
             underline="hover"
             href="/settings.html"
             target="_blank"
@@ -25,6 +25,6 @@ export function ActionPopup() {
           </Link>
         </Box>
       </FlexColumn>
-    </Container>
+    </FlexColumn>
   );
 }

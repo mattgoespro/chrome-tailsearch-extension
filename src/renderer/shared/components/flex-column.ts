@@ -4,15 +4,24 @@ import { createStyled } from "../theme/theme";
 type FlexColumnProps = {
   centerVertical?: boolean;
   centerHorizontal?: boolean;
+  padding?: number;
+  margin?: number;
 } & ContainerProps;
 
 export const FlexColumn = createStyled(Container, {
   label: "FlexColumn",
   name: "FlexColumn",
-  shouldForwardProp: (prop) => prop !== "centerVertical" && prop !== "centerHorizontal"
-})<FlexColumnProps>(({ centerVertical, centerHorizontal }) => ({
+  slot: "Root",
+  shouldForwardProp: (prop) =>
+    prop !== "centerVertical" &&
+    prop !== "centerHorizontal" &&
+    prop !== "padding" &&
+    prop !== "margin"
+})<FlexColumnProps>(({ centerVertical, centerHorizontal, padding, margin }) => ({
   display: "flex",
   flexDirection: "column",
   justifyContent: centerHorizontal ? "center" : undefined,
-  alignItems: centerVertical ? "center" : undefined
+  alignItems: centerVertical ? "center" : "stretch",
+  padding: `${padding ?? 0}rem`,
+  margin: `${margin ?? 0}rem`
 }));
