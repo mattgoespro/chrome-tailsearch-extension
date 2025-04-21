@@ -2,25 +2,35 @@ import Autocomplete from "@mui/material/Autocomplete";
 import FormControl from "@mui/material/FormControl";
 import TextField from "@mui/material/TextField";
 import { useStorage } from "../../hooks/use-storage";
+import { usePort } from "../../hooks/use-port";
 
 export function TailsearchTermInput() {
-  const [storage, sendStorageUpdateMessage] = useStorage();
+  const { data, loading, error } = useStorage();
+  const { postMessage } = usePort();
+  console.log("Data", data);
 
   function onValueChange(_event: React.SyntheticEvent, value: string) {
-    sendStorageUpdateMessage("update-search-term-storage", {
-      searchTerm: value
+    postMessage("set-current-search-term-option", {
+      data: {
+        searchTerm: value
+      }
     });
   }
 
   return (
-    <FormControl required variant="outlined" component="fieldset">
+    <FormControl required>
       <Autocomplete
-        id="searchTerm"
-        value={storage.data.searchTerm}
-        options={storage.data.options ?? []}
+        size="small"
+        color="secondary"
+        value={data?.currentSearchTermOption}
+        loading={loading}
+        loadingText="Loading..."
+        options={!loading && data.searchTermOptions != null ? data.searchTermOptions : []}
+        noOptionsText={error != null ? error.message : "No options"}
         onChange={onValueChange}
-        sx={{ width: 300 }}
-        renderInput={(params) => <TextField {...params} label={undefined} />}
+        renderInput={(params) => (
+          <TextField color="secondary" size="small" {...params} label={undefined} />
+        )}
       />
     </FormControl>
   );

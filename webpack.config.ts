@@ -8,7 +8,6 @@ import TsConfigPathsWebpackPlugin from "tsconfig-paths-webpack-plugin";
 import { Configuration, EnvironmentPlugin, ProvidePlugin } from "webpack";
 import { ExtensionReloader } from "webpack-ext-reloader";
 import MiniCssExtractWebpackPlugin from "mini-css-extract-plugin";
-import sass from "sass";
 import { Issue } from "fork-ts-checker-webpack-plugin/lib/issue";
 import initialStorageData from "./initial-storage-data.json";
 
@@ -25,7 +24,7 @@ export default (_, env: { mode: "development" | "production" | "none" | undefine
   }
 
   const srcDir = path.resolve(__dirname, "src");
-  const runtimeDor = path.join(srcDir, "runtime");
+  const runtimeDir = path.join(srcDir, "runtime");
   const rendererDir = path.join(srcDir, "renderer");
 
   return {
@@ -34,10 +33,10 @@ export default (_, env: { mode: "development" | "production" | "none" | undefine
     stats: "errors-warnings",
     devtool: mode === "development" ? "cheap-module-source-map" : false,
     entry: {
-      background: path.join(__dirname, "src", "runtime", "background.ts"),
+      background: path.join(runtimeDir, "background.ts"),
       "content-script": path.join(__dirname, "src", "content-script", "content-script.ts"),
-      options: path.join(__dirname, "src", "renderer", "options", "index.tsx"),
-      popup: path.join(__dirname, "src", "renderer", "popup", "index.tsx")
+      options: path.join(rendererDir, "options", "index.tsx"),
+      popup: path.join(rendererDir, "popup", "index.tsx")
     },
     output: {
       path: path.resolve(__dirname, "dist"),

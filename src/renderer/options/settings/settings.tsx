@@ -9,22 +9,26 @@ import ListItem from "@mui/material/ListItem";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { uuid } from "../../../shared/uuid";
 import { FormHelperText } from "@mui/material";
+import Paper from "@mui/material/Paper";
+import { usePort } from "../../shared/hooks/use-port";
 
 export function Settings() {
-  const [storage] = useStorage();
+  const { data, loading, error } = useStorage();
+  const { postMessage } = usePort();
+
+  function handleDeleteOption(event: React.MouseEvent<HTMLButtonElement>) {
+    postMessage("remove-search-term-option", {
+      data: {
+        searchTerm: event.currentTarget.value
+      }
+    });
+  }
   return (
-    <Container
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        flex: 1
-      }}
-    >
+    <Container maxWidth="sm">
       <Typography variant="h1" sx={{ textAlign: "center", marginBottom: 2 }}>
-        Tailsearch Settings
+        TailSearch Settings
       </Typography>
-      {(!storage.error && (
+      {(error == null && (
         <Container maxWidth="sm">
           <FormGroup>
             <FormHelperText required>Search Term</FormHelperText>
@@ -33,24 +37,26 @@ export function Settings() {
         </Container>
       )) || (
         <Typography color="error" variant="overline">
-          Error: {storage.error.message}
+          Error: {error.message}
         </Typography>
       )}
-      <List dense>
-        {storage.data.options?.length > 0 &&
-          storage.data.options.map((option) => (
-            <ListItem
-              key={uuid()}
-              secondaryAction={
-                <IconButton>
-                  <DeleteIcon />
-                </IconButton>
-              }
-            >
-              <Typography variant="body1">{option}</Typography>
-            </ListItem>
+      {!loading && data.searchTermOptions?.length > 0 && (
+        <List dense>
+          {data.searchTermOptions.map((option) => (
+            <Paper elevation={1} key={uuid()} sx={{ marginBottom: 1 }}>
+              <ListItem
+                secondaryAction={
+                  <IconButton size="small" edge="end" onClick={handleDeleteOption} value={option}>
+                    <DeleteIcon />
+                  </IconButton>
+                }
+              >
+                <Typography variant="body1">{option}</Typography>
+              </ListItem>
+            </Paper>
           ))}
-      </List>
+        </List>
+      )}
     </Container>
   );
 }

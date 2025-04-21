@@ -1,6 +1,7 @@
 type RuntimePortMessagePayloads = {
   "content-script-text-selected": { selectedText: string };
-  "update-search-term-storage": { searchTerm: string };
+  "set-current-search-term-option": { searchTerm: string };
+  "remove-search-term-option": { searchTerm: string };
 };
 
 const RuntimePortMessageSources = ["content-script", "settings", "popup"] as const;

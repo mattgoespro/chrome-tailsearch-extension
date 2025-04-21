@@ -32,7 +32,7 @@ export async function onContextMenuOptionClicked({
   menuItemId,
   selectionText
 }: chrome.contextMenus.OnClickData) {
-  const { searchTerm: appendText } = await getChromeStorageData();
+  const { currentSearchTermOption: appendText } = await getChromeStorageData();
 
   if (appendText == null) {
     console.warn(

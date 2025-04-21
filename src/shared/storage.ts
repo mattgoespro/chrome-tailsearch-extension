@@ -2,8 +2,8 @@ export const TailsearchChromeStorageKey = "tailsearch" as const;
 
 export type TailsearchStorage = {
   pageSelectedText?: string;
-  searchTerm?: string;
-  options?: string[];
+  currentSearchTermOption?: string;
+  searchTermOptions?: string[];
 };
 
 export async function getChromeStorageData(): Promise<TailsearchStorage> {

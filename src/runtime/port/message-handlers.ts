@@ -1,5 +1,5 @@
 import { RuntimePortMessageEvent } from "../../shared/message-event";
-import { updateChromeStorageData } from "../../shared/storage";
+import { getChromeStorageData, updateChromeStorageData } from "../../shared/storage";
 import {
   updateContextMenu,
   ContextMenuOptionId,
@@ -20,7 +20,7 @@ async function updateExtensionStateForSearchTerm(searchTerm: string) {
   }
 
   const updatedData = await updateChromeStorageData({
-    searchTerm
+    currentSearchTermOption: searchTerm
   });
 
   await updateContextMenu(ContextMenuOptionId, {
@@ -30,27 +30,46 @@ async function updateExtensionStateForSearchTerm(searchTerm: string) {
 }
 
 export async function onSettingsPagePortMessageReceived(
-  message: RuntimePortMessageEvent<"update-search-term-storage">
+  message: RuntimePortMessageEvent<"set-current-search-term-option" | "remove-search-term-option">
 ) {
   console.log(`Handling setting page message: ${message.type}`);
 
   switch (message.type) {
-    case "update-search-term-storage": {
+    case "set-current-search-term-option": {
       await updateExtensionStateForSearchTerm(message.data.searchTerm);
       console.log("Updated extension state for search term:", message.data.searchTerm);
+      break;
+    }
+    case "remove-search-term-option": {
+      const currentData = await getChromeStorageData();
+      const options = currentData.searchTermOptions ?? [];
+      const updatedOptions = options.filter((option) => option !== message.data.searchTerm);
+      const updatedStorageData = await updateChromeStorageData({
+        searchTermOptions: updatedOptions
+      });
+      console.log("Updated extension state for search term options:", updatedStorageData);
+      if (updatedStorageData.currentSearchTermOption === message.data.searchTerm) {
+        await updateContextMenu(ContextMenuOptionId, {
+          title: ContextMenuOptionDisabledOptionLabel,
+          enabled: false
+        });
+        console.warn("The search term was unset, disabling context menu option.");
+      }
+      break;
     }
   }
 }
 
 export async function onPopupPortMessageReceived(
-  message: RuntimePortMessageEvent<"update-search-term-storage">
+  message: RuntimePortMessageEvent<"set-current-search-term-option">
 ) {
   console.log(`Handling popup message: ${message.type}`);
 
   switch (message.type) {
-    case "update-search-term-storage": {
+    case "set-current-search-term-option": {
       await updateExtensionStateForSearchTerm(message.data.searchTerm);
       console.log("Updated extension state for search term:", message.data.searchTerm);
+      break;
     }
   }
 }
@@ -67,7 +86,7 @@ export async function onContentScriptPortMessageReceived(
         pageSelectedText: message.data.selectedText
       });
 
-      if (updatedStorageData.searchTerm == null) {
+      if (updatedStorageData.currentSearchTermOption == null) {
         await updateContextMenu(ContextMenuOptionId, {
           title: ContextMenuOptionDisabledOptionLabel,
           enabled: false
@@ -78,7 +97,7 @@ export async function onContentScriptPortMessageReceived(
 
       const menuOptionTitle = getContextMenuOptionTitle(
         updatedStorageData.pageSelectedText,
-        updatedStorageData.searchTerm
+        updatedStorageData.currentSearchTermOption
       );
 
       await updateContextMenu(ContextMenuOptionId, {
