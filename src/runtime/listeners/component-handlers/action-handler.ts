@@ -1,4 +1,5 @@
 import { getChromeStorageData } from "../../../shared/storage";
+import { createTailSearchQueryUrl } from "../../../shared/tailsearch";
 
 export async function onActionClicked(tab: chrome.tabs.Tab) {
   const { currentSearchTermOption: appendText, pageSelectedText: selectedText } =
@@ -14,12 +15,14 @@ export async function onActionClicked(tab: chrome.tabs.Tab) {
         alert("You haven't configured the text to append from the extension options.");
       }
     });
-    return;
   }
 
   await chrome.tabs.create({
-    url: `https://www.google.com/search?q=${encodeURIComponent(`${selectedText} ${appendText}`)}`,
+    url: createTailSearchQueryUrl(selectedText, appendText),
     active: false
   });
+
   console.log(`Opened new tab with search query '${searchTerm}'`);
+
+  return true;
 }

@@ -1,10 +1,10 @@
 type RuntimePortMessagePayloads = {
-  "content-script-text-selected": { selectedText: string };
+  "content-script-context-menu-opened": { selectedText: string };
   "set-current-search-term-option": { searchTerm: string };
   "remove-search-term-option": { searchTerm: string };
 };
 
-const RuntimePortMessageSources = ["content-script", "options", "popup"] as const;
+export const RuntimePortMessageSources = ["content-script", "options", "popup"] as const;
 
 export type RuntimePortMessageSource = (typeof RuntimePortMessageSources)[number];
 

@@ -10,6 +10,7 @@ import { ExtensionReloader } from "webpack-ext-reloader";
 import MiniCssExtractWebpackPlugin from "mini-css-extract-plugin";
 import { Issue } from "fork-ts-checker-webpack-plugin/lib/issue";
 import initialStorageData from "./initial-storage-data.json";
+import TerserWebpackPlugin from "terser-webpack-plugin";
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const ExtensionReloaderWebpackPlugin: typeof ExtensionReloader = require("webpack-ext-reloader");
@@ -24,6 +25,7 @@ export default (_, env: { mode: "development" | "production" | "none" | undefine
   }
 
   const srcDir = path.resolve(__dirname, "src");
+  const contentScriptDir = path.join(srcDir, "content-script");
   const runtimeDir = path.join(srcDir, "runtime");
   const rendererDir = path.join(srcDir, "renderer");
 
@@ -34,7 +36,7 @@ export default (_, env: { mode: "development" | "production" | "none" | undefine
     devtool: mode === "development" ? "cheap-module-source-map" : false,
     entry: {
       background: path.join(runtimeDir, "background.ts"),
-      "content-script": path.join(__dirname, "src", "content-script", "content-script.ts"),
+      "content-script": path.join(contentScriptDir, "content-script.ts"),
       options: path.join(rendererDir, "options", "index.tsx"),
       popup: path.join(rendererDir, "popup", "index.tsx")
     },
@@ -45,7 +47,9 @@ export default (_, env: { mode: "development" | "production" | "none" | undefine
     resolve: {
       extensions: [".ts", ".tsx", ".js"],
       fallback: {
-        crypto: false
+        crypto: false,
+        assert: require.resolve("assert-browserify"),
+        console: require.resolve("console-browserify")
       },
       plugins: [new TsConfigPathsWebpackPlugin()]
     },
@@ -107,6 +111,13 @@ export default (_, env: { mode: "development" | "production" | "none" | undefine
         chunks: ["popup"],
         scriptLoading: "defer"
       }),
+      new TerserWebpackPlugin({
+        parallel: true,
+        extractComments: false,
+        terserOptions: {
+          compress: true
+        }
+      }),
       new ForkTsCheckerWebpackPlugin({
         formatter: (issue: Issue) => {
           const { file, severity, code, message } = issue;
@@ -153,6 +164,9 @@ export default (_, env: { mode: "development" | "production" | "none" | undefine
           })
         : false
     ],
-    externals: ["React"] // TODO: is this needed?
+    externals: ["React"], // TODO: is this needed?
+    optimization: {
+      minimize: true
+    }
   } satisfies Configuration;
 };

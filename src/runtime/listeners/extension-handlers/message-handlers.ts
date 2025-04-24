@@ -78,13 +78,13 @@ export async function onPopupPageMessageReceived(
 }
 
 export async function onContentScriptPortMessageReceived(
-  message: RuntimePortMessageEvent<"content-script-text-selected">
+  message: RuntimePortMessageEvent<"content-script-context-menu-opened">
 ) {
   console.log(`Handling content script message: ${message.type}`);
   console.log(message);
 
   switch (message.type) {
-    case "content-script-text-selected": {
+    case "content-script-context-menu-opened": {
       const updatedStorageData = await updateChromeStorageData({
         pageSelectedText: message.data.selectedText
       });
@@ -112,4 +112,6 @@ export async function onContentScriptPortMessageReceived(
       );
     }
   }
+
+  return true;
 }

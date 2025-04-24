@@ -1,4 +1,5 @@
 import { getChromeStorageData } from "../../../shared/storage";
+import { createTailSearchQueryUrl } from "../../../shared/tailsearch";
 import { TailSearchContextMenuOptionId } from "../../components/context-menu";
 
 export async function onContextMenuOptionClicked({
@@ -10,24 +11,15 @@ export async function onContextMenuOptionClicked({
     case TailSearchContextMenuOptionId: {
       const { currentSearchTermOption, pageSelectedText } = await getChromeStorageData();
 
-      // if (currentSearchTermOption == null) {
-      //   console.warn(
-      //     "A search term option is not configured and the context menu option was disabled."
-      //   );
-      //   await disableContextMenuOption();
-      //   return;
-      // }
-
       if (pageSelectedText !== selectionText) {
-        console.warn(
+        throw new Error(
           "The selected text does not match the text used to create the context menu option, aborting."
         );
-        return;
       }
 
       if (selectionText != null) {
         chrome.tabs.create({
-          url: `https://www.google.com/search?q=${encodeURIComponent(`${selectionText} ${currentSearchTermOption}`)}`
+          url: createTailSearchQueryUrl(selectionText, currentSearchTermOption)
         });
       }
     }
@@ -36,4 +28,6 @@ export async function onContextMenuOptionClicked({
       break;
     }
   }
+
+  return true;
 }
