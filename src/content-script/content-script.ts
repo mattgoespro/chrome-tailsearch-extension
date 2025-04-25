@@ -2,8 +2,7 @@ import { RuntimePortMessageEvent } from "../shared/message-event";
 
 const port = chrome.runtime.connect({ name: "content-script" });
 
-document.addEventListener("mouseup", (event) => {
-  console.log(event);
+document.addEventListener("mouseup", () => {
   const selectedText = document.getSelection().toString();
 
   if ((selectedText ?? "").trim().length === 0) {

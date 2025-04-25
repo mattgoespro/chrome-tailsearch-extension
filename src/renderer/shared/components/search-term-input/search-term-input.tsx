@@ -25,9 +25,7 @@ export function SearchTermInput() {
         options={!loading && data.searchTermOptions != null ? data.searchTermOptions : []}
         noOptionsText={error != null ? error.message : "No options"}
         onChange={onValueChange}
-        renderInput={(params) => (
-          <TextField {...params} color="primary" size="small" label={undefined} />
-        )}
+        renderInput={(params) => <TextField {...params} color="primary" size="small" />}
       />
     </FormControl>
   );
