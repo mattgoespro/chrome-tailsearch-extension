@@ -9,18 +9,18 @@ import { Configuration, EnvironmentPlugin, ProvidePlugin } from "webpack";
 import { ExtensionReloader } from "webpack-ext-reloader";
 import MiniCssExtractWebpackPlugin from "mini-css-extract-plugin";
 import { Issue } from "fork-ts-checker-webpack-plugin/lib/issue";
-import initialStorageData from "./initial-storage-data.json";
+import initialStorageData from "./options.extension.json";
 import TerserWebpackPlugin from "terser-webpack-plugin";
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const ExtensionReloaderWebpackPlugin: typeof ExtensionReloader = require("webpack-ext-reloader");
 
-export default (_, env: { mode: "development" | "production" | "none" | undefined }) => {
+export default (_, env: { mode: Configuration["mode"] }) => {
   const { mode } = env;
 
   if (initialStorageData == null) {
     console.warn(
-      `Missing initial storage data in './initial-storage-data.json', data won\`t be set.`
+      `Missing initial storage data in './initial-storage-data.json', default extension options won't be available.`
     );
   }
 
@@ -59,7 +59,7 @@ export default (_, env: { mode: "development" | "production" | "none" | undefine
           test: /\.[tj]sx?$/,
           loader: "babel-loader",
           include: srcDir,
-          exclude: /node_modules/
+          exclude: /(node_modules)|(dist)/
         },
         {
           test: /\.css$/,
@@ -76,7 +76,7 @@ export default (_, env: { mode: "development" | "production" | "none" | undefine
             "postcss-loader"
           ],
           include: srcDir,
-          exclude: /node_modules/
+          exclude: /(node_modules)|(dist)/
         }
       ]
     },
@@ -115,7 +115,11 @@ export default (_, env: { mode: "development" | "production" | "none" | undefine
         parallel: true,
         extractComments: false,
         terserOptions: {
-          compress: true
+          compress: mode === "production",
+          mangle: mode === "production",
+          output: {
+            comments: false
+          }
         }
       }),
       new ForkTsCheckerWebpackPlugin({
