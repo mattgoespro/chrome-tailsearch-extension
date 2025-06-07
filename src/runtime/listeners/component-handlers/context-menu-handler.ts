@@ -1,30 +1,25 @@
 import { getChromeStorageData } from "../../../shared/storage";
-import { createTailSearchQueryUrl } from "../../../shared/tailsearch";
-import { TailSearchContextMenuOptionId } from "../../components/context-menu";
+import { createTailSearchQueryUrl } from "../../../shared/model";
+import { ContextMenuOptionId } from "../../components/context-menu";
 
 export async function onContextMenuOptionClicked({
   menuItemId,
   selectionText
 }: chrome.contextMenus.OnClickData) {
-  console.log("Context menu option clicked:", menuItemId, selectionText);
   switch (menuItemId) {
-    case TailSearchContextMenuOptionId: {
-      const { currentSearchTermOption, pageSelectedText } = await getChromeStorageData();
+    case ContextMenuOptionId: {
+      const { currentSearchTermOption } = await getChromeStorageData();
 
-      if (pageSelectedText !== selectionText) {
-        throw new Error(
-          "The selected text does not match the text used to create the context menu option, aborting."
-        );
-      }
+      console.log("Text used to open context menu option:", selectionText);
 
-      if (selectionText != null) {
-        chrome.tabs.create({
+      if ((selectionText ?? "").trim().length > 0) {
+        await chrome.tabs.create({
           url: createTailSearchQueryUrl(selectionText, currentSearchTermOption)
         });
       }
     }
     default: {
-      console.warn(`Ignoring context menu option click for unknown menu item: ${menuItemId}`);
+      console.warn(`Ignoring context menu option click for unknown option: ${menuItemId}`);
       break;
     }
   }

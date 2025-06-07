@@ -1,17 +1,14 @@
-const html = require("@html-eslint/eslint-plugin");
-const react = require("eslint-plugin-react");
-const tseslint = require("typescript-eslint");
+import html from "@html-eslint/eslint-plugin";
+import react from "eslint-plugin-react";
+import tseslint from "typescript-eslint";
 
-module.exports = tseslint.config(
+export default tseslint.config(
   {
-    ignores: ["temp", "*.js", "node_modules", "dist/**/*"]
+    ignores: ["temp", "node_modules/**/*", "dist/**/*"]
   },
   {
     ...react.configs.flat.recommended,
-    files: ["src/**/*.{ts,tsx}"],
-    languageOptions: {
-      ...react.configs.flat.recommended.languageOptions
-    },
+    files: ["src/renderer/**/*"],
     settings: {
       react: {
         version: "detect"

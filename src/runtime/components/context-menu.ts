@@ -1,5 +1,5 @@
-export const TailSearchContextMenuOptionId = "searchAppendedText";
-export const TailSearchContextMenuOptionDisabledOptionLabel =
+export const ContextMenuOptionId = "searchAppendedText";
+export const ContextMenuOptionDisabledText =
   "Configure and select a TailSearch search term option to search by.";
 
 export function getContextMenuOptionTitle(selectedText: string, appendText: string) {
@@ -8,7 +8,7 @@ export function getContextMenuOptionTitle(selectedText: string, appendText: stri
 
 export async function updateContextMenu(
   id: string,
-  item: Partial<chrome.contextMenus.UpdateProperties>
+  item: Omit<Partial<chrome.contextMenus.CreateProperties>, "id">
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     chrome.contextMenus.update(id, item, async () => {
@@ -27,8 +27,8 @@ export async function updateContextMenu(
 }
 
 export async function disableContextMenuOption(): Promise<void> {
-  return updateContextMenu(TailSearchContextMenuOptionId, {
-    title: TailSearchContextMenuOptionDisabledOptionLabel,
+  return updateContextMenu(ContextMenuOptionId, {
+    title: ContextMenuOptionDisabledText,
     enabled: false
   });
 }

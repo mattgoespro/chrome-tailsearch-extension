@@ -1,8 +1,7 @@
 import { ThemeProvider } from "@emotion/react";
-import { QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRoot } from "react-dom/client";
 import { PortContext } from "./contexts/port-context";
-import { queryClient } from "./hooks/query-client";
 import { theme } from "./theme/theme";
 import { TailsearchChromeStorageKey } from "../../shared/storage";
 import { RuntimePortMessageSource } from "../../shared/message-event";
@@ -10,6 +9,18 @@ import { ReactNode } from "react";
 
 export function createPage(source: RuntimePortMessageSource, page: ReactNode) {
   const root = document.getElementById("root");
+
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        behavior: {
+          onFetch: () => {
+            console.log("Fetching data from Chrome storage...");
+          }
+        }
+      }
+    }
+  });
 
   chrome.storage.onChanged.addListener(() => {
     console.log("Storage changed, refetching queries");

@@ -60,23 +60,6 @@ export default (_, env: { mode: Configuration["mode"] }) => {
           loader: "babel-loader",
           include: srcDir,
           exclude: /(node_modules)|(dist)/
-        },
-        {
-          test: /\.css$/,
-          use: [
-            MiniCssExtractWebpackPlugin.loader,
-            {
-              loader: "css-loader",
-              options: {
-                modules: {
-                  localIdentName: "[name]__[local]___[hash:base64:5]"
-                }
-              }
-            },
-            "postcss-loader"
-          ],
-          include: srcDir,
-          exclude: /(node_modules)|(dist)/
         }
       ]
     },
@@ -94,9 +77,6 @@ export default (_, env: { mode: Configuration["mode"] }) => {
       new CleanWebpackPlugin({
         verbose: true
       }),
-      new MiniCssExtractWebpackPlugin({
-        filename: "css/[name].css"
-      }),
       new HtmlWebpackPlugin({
         filename: "options.html",
         template: path.join(rendererDir, "options", "index.html"),
@@ -110,17 +90,6 @@ export default (_, env: { mode: Configuration["mode"] }) => {
         inject: "body",
         chunks: ["popup"],
         scriptLoading: "defer"
-      }),
-      new TerserWebpackPlugin({
-        parallel: true,
-        extractComments: false,
-        terserOptions: {
-          compress: mode === "production",
-          mangle: mode === "production",
-          output: {
-            comments: false
-          }
-        }
       }),
       new ForkTsCheckerWebpackPlugin({
         formatter: (issue: Issue) => {
@@ -170,7 +139,21 @@ export default (_, env: { mode: Configuration["mode"] }) => {
     ],
     externals: ["React"], // TODO: is this needed?
     optimization: {
-      minimize: true
+      minimize: mode === "production",
+      minimizer: [
+        new TerserWebpackPlugin({
+          parallel: true,
+          extractComments: false,
+          include: /\.js$/,
+          terserOptions: {
+            compress: mode === "production",
+            mangle: mode === "production",
+            output: {
+              comments: false
+            }
+          }
+        })
+      ]
     }
   } satisfies Configuration;
 };

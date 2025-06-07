@@ -4,6 +4,7 @@ import {
   onPopupPageMessageReceived
 } from "../extension-handlers/message-handlers";
 import { isRuntimePort, RuntimePortMessageSource } from "../../../shared/message-event";
+import { updateChromeStorageData } from "../../../shared/storage";
 
 type ActivePortMap = Map<
   Omit<RuntimePortMessageSource, "content-script"> | number,
@@ -68,13 +69,17 @@ export async function onReceivedConnection(port: chrome.runtime.Port) {
   return true;
 }
 
-export function onTabRemoved(tabId: number, removeInfo: chrome.tabs.TabRemoveInfo) {
+export async function onTabRemoved(tabId: number, removeInfo: chrome.tabs.TabRemoveInfo) {
   withConnectionHandler((activePorts) => {
     if (activePorts.has(tabId)) {
       activePorts.get(tabId).forEach((port) => port.disconnect());
       activePorts.delete(tabId);
       console.log(`Cleaned up ports for closed tab '${tabId}' in window '${removeInfo.windowId}'`);
     }
+  });
+
+  await updateChromeStorageData({
+    pageSelectedText: undefined
   });
 
   return true;

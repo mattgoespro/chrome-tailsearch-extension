@@ -2,7 +2,7 @@ import { RuntimePortMessageEvent } from "../../../shared/message-event";
 import { getChromeStorageData, updateChromeStorageData } from "../../../shared/storage";
 import {
   updateContextMenu,
-  TailSearchContextMenuOptionId,
+  ContextMenuOptionId,
   getContextMenuOptionTitle,
   disableContextMenuOption
 } from "../../components/context-menu";
@@ -20,7 +20,7 @@ async function updateExtensionStateForSearchTerm(searchTerm: string) {
     currentSearchTermOption: searchTerm
   });
 
-  await updateContextMenu(TailSearchContextMenuOptionId, {
+  await updateContextMenu(ContextMenuOptionId, {
     title: getContextMenuOptionTitle(updatedData.pageSelectedText, searchTerm),
     enabled: true
   });
@@ -102,7 +102,7 @@ export async function onContentScriptPortMessageReceived(
         updatedStorageData.currentSearchTermOption
       );
 
-      await updateContextMenu(TailSearchContextMenuOptionId, {
+      await updateContextMenu(ContextMenuOptionId, {
         title: menuOptionTitle,
         enabled: true
       });
