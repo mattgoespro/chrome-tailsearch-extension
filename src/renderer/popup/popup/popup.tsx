@@ -17,7 +17,7 @@ export function ActionPopup() {
             variant="button"
             fontSize="1em"
             underline="hover"
-            href="/popup.html"
+            href="/options.html"
             target="_blank"
             textTransform="none"
           >

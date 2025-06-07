@@ -1,5 +1,5 @@
 import Container, { ContainerProps } from "@mui/material/Container";
-import { createStyled } from "../theme/theme";
+import { createStyled } from "../theme";
 
 type FlexColumnProps = {
   centerVertical?: boolean;

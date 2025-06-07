@@ -10,7 +10,8 @@ import { uuid } from "../../../shared/uuid";
 import { FormHelperText } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { usePort } from "../../shared/hooks/use-port";
-import { FlexColumn } from "../../shared/components/flex-column";
+import { FlexBox } from "../../shared/components/flex-box";
+import Box from "@mui/material/Box";
 
 export function Settings() {
   const { data, loading, error } = useStorage();
@@ -25,13 +26,15 @@ export function Settings() {
   }
 
   return (
-    <FlexColumn maxWidth="sm">
+    <FlexBox direction="column" align="center" maxWidth="md">
       <Typography variant="h1">TailSearch Settings</Typography>
       {(error == null && (
-        <FormGroup>
-          <FormHelperText required>Search Term</FormHelperText>
-          <SearchTermInput />
-        </FormGroup>
+        <Box maxWidth="md">
+          <FormGroup>
+            <FormHelperText required>Search Term</FormHelperText>
+            <SearchTermInput />
+          </FormGroup>
+        </Box>
       )) || (
         <Typography color="error" variant="overline">
           Error: {error.message}
@@ -40,7 +43,17 @@ export function Settings() {
       {!loading && data.searchTermOptions?.length > 0 && (
         <List dense>
           {data.searchTermOptions.map((option) => (
-            <Paper elevation={2} key={uuid()}>
+            <Paper
+              elevation={0.5}
+              key={uuid()}
+              sx={(theme) => ({
+                margin: theme.spacing(1),
+                padding: theme.spacing(1),
+                backgroundColor: theme.palette.background.paper,
+                display: "flex",
+                gap: theme.spacing(1)
+              })}
+            >
               <ListItem
                 secondaryAction={
                   <IconButton size="small" edge="end" onClick={handleDeleteOption} value={option}>
@@ -54,6 +67,6 @@ export function Settings() {
           ))}
         </List>
       )}
-    </FlexColumn>
+    </FlexBox>
   );
 }

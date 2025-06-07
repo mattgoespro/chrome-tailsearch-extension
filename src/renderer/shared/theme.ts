@@ -51,7 +51,7 @@ export const theme = createTheme({
     },
     background: {
       default: "#101010",
-      paper: "#1f1f1f"
+      paper: "#292929"
     }
   },
   typography: (palette) => ({
@@ -173,6 +173,25 @@ export const theme = createTheme({
           height: "0.875em"
         }
       }
+    },
+    MuiLink: {
+      defaultProps: {
+        underline: "hover",
+        color: "primary"
+      },
+      variants: [
+        {
+          props: { variant: "body1" },
+          style: {
+            fontSize: "1em",
+            fontWeight: 400,
+            color: "#1976d2",
+            "&:hover": {
+              textDecoration: "underline"
+            }
+          }
+        }
+      ]
     }
   },
   spacing: 2,
