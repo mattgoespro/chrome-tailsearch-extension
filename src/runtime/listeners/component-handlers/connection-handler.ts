@@ -13,9 +13,12 @@ type ActivePortMap = Map<
 
 const ActivePorts: ActivePortMap = new Map();
 
-function addPort(tabId: number, port: chrome.runtime.Port) {
+function addPort(tabId: number | RuntimePortMessageSource, port: chrome.runtime.Port) {
   if (!ActivePorts.has(tabId)) {
+    console.log(`Creating new port set for tab ID: ${tabId}`);
     ActivePorts.set(tabId, new Set());
+  } else {
+    console.log(`Adding port to existing active ports with tab ID: ${tabId}`);
   }
 
   ActivePorts.get(tabId).add(port);
@@ -37,33 +40,34 @@ export function withConnectionHandler(handler: (activePorts: ActivePortMap) => v
 }
 
 export async function onReceivedConnection(port: chrome.runtime.Port) {
+  console.log("Port:", port);
+  const { sender, name } = port;
+  const senderTabId = sender?.tab?.id != null ? sender.tab.id.toString() : name;
   console.log(
     `Background received connection from port '${port.name}' in tab '${port.sender?.tab?.id}'`
   );
-  const { sender, name } = port;
-  const senderTabId = sender?.tab?.id;
 
-  if (sender?.tab?.id == null && !isRuntimePort(name)) {
-    console.warn("Port connected without a tab context, ignoring.");
-    return true;
-  }
-
+  console.log("Sender tab ID:", senderTabId);
   addPort(senderTabId, port);
 
-  switch (port.name) {
-    case "content-script":
-      port.onMessage.addListener(onContentScriptPortMessageReceived);
-      break;
-    case "options": {
-      port.onMessage.addListener(onSettingsPageMessageReceived);
-      break;
+  if (isRuntimePort(senderTabId)) {
+    switch (senderTabId) {
+      case "options": {
+        console.log("Adding listener for extension settings page...");
+        port.onMessage.addListener(onSettingsPageMessageReceived);
+        break;
+      }
+      case "popup":
+        console.log("Adding listener for extension popup page...");
+        port.onMessage.addListener(onPopupPageMessageReceived);
+        break;
+      default:
+        console.warn(`Unknown port '${port.name}'!`);
+        break;
     }
-    case "popup":
-      port.onMessage.addListener(onPopupPageMessageReceived);
-      break;
-    default:
-      console.warn(`Unknown port '${port.name}'!`);
-      break;
+  } else {
+    console.log(`Adding listener for web page content script '${senderTabId}'...`);
+    port.onMessage.addListener(onContentScriptPortMessageReceived);
   }
 
   return true;

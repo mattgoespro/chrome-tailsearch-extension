@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { RuntimePortMessageEvent, RuntimePortMessageType } from "../../../shared/message-event";
+import { RuntimePortMessageEvent, RuntimePortMessageName } from "../../../shared/message-event";
 import { PortContext } from "../contexts/port-context";
 
 export function usePort() {
@@ -10,7 +10,7 @@ export function usePort() {
     throw new Error("Cannot use a disconnected port.");
   }
 
-  function postMessage<T extends RuntimePortMessageType>(
+  function postMessage<T extends RuntimePortMessageName>(
     type: T,
     message: Omit<RuntimePortMessageEvent<T>, "source" | "type">
   ) {

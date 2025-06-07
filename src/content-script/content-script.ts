@@ -15,10 +15,8 @@ document.addEventListener("mouseup", () => {
     data: { selectedText }
   };
 
-  console.log(
-    `Selected text: ${selectedText}`,
-    `Sending selected text '${textSelectedMessage}' to extension through port name ${port.name}: `
-  );
+  console.log(`Selected text: ${selectedText}`);
+  console.log("Sending selected text port message:", textSelectedMessage);
 
   port.postMessage(textSelectedMessage);
 });

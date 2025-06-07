@@ -77,16 +77,15 @@ export async function onPopupPageMessageReceived(
   }
 }
 
-export async function onContentScriptPortMessageReceived(
-  message: RuntimePortMessageEvent<"content-script-context-menu-opened">
-) {
+export async function onContentScriptPortMessageReceived(message: RuntimePortMessageEvent) {
   console.log(`Handling content script message: ${message.type}`);
   console.log(message);
 
   switch (message.type) {
     case "content-script-context-menu-opened": {
+      const msg = message as RuntimePortMessageEvent<"content-script-context-menu-opened">;
       const updatedStorageData = await updateChromeStorageData({
-        pageSelectedText: message.data.selectedText
+        pageSelectedText: msg.data.selectedText
       });
 
       if (updatedStorageData.currentSearchTermOption == null) {
