@@ -1,9 +1,4 @@
 {
-  "[scss]": {
-    "editor.defaultFormatter": "sibiraj-s.vscode-scss-formatter",
-    "editor.formatOnPaste": true,
-    "editor.formatOnSave": true
-  },
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnPaste": true,
@@ -30,27 +25,25 @@
   "eslint.validate": ["javascript", "typescript", "typescriptreact", "html"],
   "explorer.confirmDragAndDrop": false,
   "files.exclude": {
-    ".git": true,
-    "node_modules": true
+    "**/.git/**": true,
+    "**/.buildcache/**": true,
+    "**/node_modules/**": true
   },
   "html.format.enable": false,
   "javascript.format.enable": false,
   "javascript.suggestionActions.enabled": false,
   "javascript.updateImportsOnFileMove.enabled": "always",
   "javascript.validate.enable": false,
-  "less.validate": false,
-  "material-icon-theme.activeIconPack": "react",
-  "material-icon-theme.files.color": "#000000",
-  "material-icon-theme.folders.color": "#eb7734",
-  "material-icon-theme.hidesExplorerArrows": true,
-  "npm.exclude": "release/**",
-  "scss.lint.emptyRules": "warning",
-  "scss.lint.zeroUnits": "warning",
-  "scss.showErrors": true,
-  "scss.validate": false,
-  "scssFormatter.printWidth": 120,
   "search.exclude": {
-    ".vscode": true
+    ".vscode": true,
+    "*.js": true,
+    "*.json": true
+  },
+  "files.watcherExclude": {
+    "**/.git/**": true,
+    "**/.buildcache/**": true,
+    "**/node_modules/**": true,
+    "**/dist/**": true
   },
   "terminal.integrated.defaultProfile.windows": "bash-node",
   "terminal.integrated.profiles.windows": {
