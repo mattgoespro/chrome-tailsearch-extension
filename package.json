@@ -9,7 +9,7 @@
     "node": ">=10.0.0"
   },
   "scripts": {
-    "debug": "webpack --config webpack.config.ts --mode development --watch",
+    "dev": "webpack --config webpack.config.ts --mode development --watch",
     "build": "webpack --config webpack.config.ts --mode production",
     "lint": "eslint src"
   },
@@ -50,6 +50,7 @@
     "cross-env": "^7.0.3",
     "css-loader": "^7.1.2",
     "dotenv": "^16.5.0",
+    "esbuild-loader": "^4.3.0",
     "eslint": "^9.28.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-import": "^2.31.0",

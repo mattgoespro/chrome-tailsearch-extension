@@ -7,8 +7,6 @@ import HtmlWebpackPlugin from "html-webpack-plugin";
 import TsConfigPathsWebpackPlugin from "tsconfig-paths-webpack-plugin";
 import { Configuration, EnvironmentPlugin, ProvidePlugin } from "webpack";
 import { ExtensionReloader } from "webpack-ext-reloader";
-import MiniCssExtractWebpackPlugin from "mini-css-extract-plugin";
-import { Issue } from "fork-ts-checker-webpack-plugin/lib/issue";
 import initialStorageData from "./options.extension.json";
 import TerserWebpackPlugin from "terser-webpack-plugin";
 
@@ -33,7 +31,7 @@ export default (_, env: { mode: Configuration["mode"] }) => {
     target: "web",
     mode,
     stats: "errors-warnings",
-    devtool: mode === "development" ? "cheap-module-source-map" : false,
+    devtool: "inline-source-map",
     entry: {
       background: path.join(runtimeDir, "background.ts"),
       "content-script": path.join(contentScriptDir, "content-script.ts"),
@@ -46,11 +44,6 @@ export default (_, env: { mode: Configuration["mode"] }) => {
     },
     resolve: {
       extensions: [".ts", ".tsx", ".js"],
-      fallback: {
-        crypto: false,
-        assert: require.resolve("assert-browserify"),
-        console: require.resolve("console-browserify")
-      },
       plugins: [new TsConfigPathsWebpackPlugin()]
     },
     module: {
@@ -91,12 +84,7 @@ export default (_, env: { mode: Configuration["mode"] }) => {
         chunks: ["popup"],
         scriptLoading: "defer"
       }),
-      new ForkTsCheckerWebpackPlugin({
-        formatter: (issue: Issue) => {
-          const { file, severity, code, message } = issue;
-          return `${file} (${severity}): ${code} - ${message}`;
-        }
-      }),
+      new ForkTsCheckerWebpackPlugin(),
       new CopyWebpackPlugin({
         patterns: [
           {
@@ -104,14 +92,20 @@ export default (_, env: { mode: Configuration["mode"] }) => {
             to: path.join(__dirname, "dist"),
             transform: (content) => {
               const manifest = JSON.parse(content.toString());
-              delete manifest["$schema"];
-              return JSON.stringify(manifest, null, 2);
+              return JSON.stringify(
+                {
+                  ...manifest,
+                  schema: undefined
+                },
+                null,
+                2
+              );
             }
           }
         ]
       }),
       new FaviconsWebpackPlugin({
-        logo: path.join(srcDir, "assets", "logo.png"),
+        logo: path.join(srcDir, "assets", mode === "production" ? "logo.png" : "logo-dev.png"),
         mode: "webapp",
         favicons: {
           icons: {
