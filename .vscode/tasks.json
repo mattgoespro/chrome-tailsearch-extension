@@ -2,23 +2,18 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "dev",
+      "detail": "Run the webpack development server.",
       "type": "npm",
-      "script": "debug",
-      "label": "debug",
+      "script": "dev",
       "isBackground": true,
       "problemMatcher": "$ts-checker-webpack-watch"
     },
     {
-      "type": "npm",
-      "script": "debug: prod",
-      "label": "debug: prod",
-      "isBackground": true,
-      "problemMatcher": "$ts-checker-webpack-watch"
-    },
-    {
+      "label": "build",
+      "detail": "Build the extension for production.",
       "type": "npm",
       "script": "build",
-      "label": "build",
       "isBackground": true,
       "group": {
         "kind": "build",

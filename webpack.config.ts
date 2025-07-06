@@ -1,5 +1,4 @@
 import path from "path";
-import { CleanWebpackPlugin } from "clean-webpack-plugin";
 import CopyWebpackPlugin from "copy-webpack-plugin";
 import FaviconsWebpackPlugin from "favicons-webpack-plugin";
 import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin";
@@ -31,7 +30,7 @@ export default (_, env: { mode: Configuration["mode"] }) => {
     target: "web",
     mode,
     stats: "errors-warnings",
-    devtool: "inline-source-map",
+    devtool: mode === "development" ? "source-map" : false,
     entry: {
       background: path.join(runtimeDir, "background.ts"),
       "content-script": path.join(contentScriptDir, "content-script.ts"),
@@ -40,7 +39,8 @@ export default (_, env: { mode: Configuration["mode"] }) => {
     },
     output: {
       path: path.resolve(__dirname, "dist"),
-      filename: "js/[name].js"
+      filename: "js/[name].js",
+      clean: mode === "production"
     },
     resolve: {
       extensions: [".ts", ".tsx", ".js"],
@@ -56,10 +56,7 @@ export default (_, env: { mode: Configuration["mode"] }) => {
         }
       ]
     },
-    cache: {
-      type: "filesystem",
-      cacheDirectory: path.resolve(__dirname, ".buildcache")
-    },
+    externals: ["React"], // TODO: is this needed?
     plugins: [
       new EnvironmentPlugin({
         EXTENSION_STORAGE_INITIAL_DATA: JSON.stringify(initialStorageData)
@@ -67,22 +64,21 @@ export default (_, env: { mode: Configuration["mode"] }) => {
       new ProvidePlugin({
         React: "react"
       }),
-      new CleanWebpackPlugin({
-        verbose: true
-      }),
       new HtmlWebpackPlugin({
         filename: "options.html",
         template: path.join(rendererDir, "options", "index.html"),
+        chunks: ["options", "renderer.shared"],
+        excludeChunks: ["popup"],
         inject: "body",
-        chunks: ["options"],
-        scriptLoading: "defer"
+        minify: mode === "production"
       }),
       new HtmlWebpackPlugin({
         filename: "popup.html",
         template: path.join(rendererDir, "popup", "index.html"),
+        chunks: ["popup", "renderer.shared"],
+        excludeChunks: ["options"],
         inject: "body",
-        chunks: ["popup"],
-        scriptLoading: "defer"
+        minify: mode === "production"
       }),
       new ForkTsCheckerWebpackPlugin(),
       new CopyWebpackPlugin({
@@ -91,10 +87,11 @@ export default (_, env: { mode: Configuration["mode"] }) => {
             from: path.join(srcDir, "manifest.json"),
             to: path.join(__dirname, "dist"),
             transform: (content) => {
-              const manifest = JSON.parse(content.toString());
+              const manifestContent = JSON.parse(content.toString());
+
               return JSON.stringify(
                 {
-                  ...manifest,
+                  ...manifestContent,
                   schema: undefined
                 },
                 null,
@@ -131,23 +128,62 @@ export default (_, env: { mode: Configuration["mode"] }) => {
           })
         : false
     ],
-    externals: ["React"], // TODO: is this needed?
-    optimization: {
-      minimize: mode === "production",
-      minimizer: [
-        new TerserWebpackPlugin({
-          parallel: true,
-          extractComments: false,
-          include: /\.js$/,
-          terserOptions: {
-            compress: mode === "production",
-            mangle: mode === "production",
-            output: {
-              comments: false
+    optimization:
+      mode === "production"
+        ? {
+            minimize: true,
+            minimizer: [
+              new TerserWebpackPlugin({
+                parallel: true,
+                extractComments: false,
+                include: /\.js$/,
+                terserOptions: {
+                  compress: true,
+                  mangle: true,
+                  format: {
+                    braces: true,
+                    max_line_len: 1000
+                  }
+                }
+              })
+            ],
+            concatenateModules: true,
+            splitChunks: {
+              chunks: "all",
+              cacheGroups: {
+                default: false,
+                vendors: false,
+                rendererShared: {
+                  name: "renderer.shared",
+                  test: /[\\/]renderer[\\/]shared[\\/]/,
+                  chunks: "all",
+                  enforce: true
+                },
+                renderer: {
+                  name: "renderer",
+                  test: /[\\/]renderer[\\/]/,
+                  chunks: "all",
+                  enforce: true
+                },
+                mui: {
+                  name: "mui",
+                  test: /[\\/]node_modules[\\/](@mui|@emotion)[\\/]/,
+                  chunks: "all",
+                  enforce: true
+                },
+                react: {
+                  name: "react",
+                  test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+                  chunks: "all",
+                  enforce: true // Ensure React and ReactDOM are in a separate chunk
+                }
+              }
             }
           }
-        })
-      ]
+        : undefined,
+    cache: {
+      type: "filesystem",
+      cacheDirectory: path.resolve(__dirname, ".buildcache")
     }
   } satisfies Configuration;
 };

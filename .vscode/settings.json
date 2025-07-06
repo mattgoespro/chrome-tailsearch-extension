@@ -35,9 +35,12 @@
   "javascript.updateImportsOnFileMove.enabled": "always",
   "javascript.validate.enable": false,
   "search.exclude": {
-    ".vscode": true,
-    "*.js": true,
-    "*.json": true
+    "**/.vscode/**": true,
+    "**/dist/**": true,
+    "**/*.ts": true,
+    "**/*.js": true,
+    "**/*.mjs": true,
+    "**/*.json": true
   },
   "files.watcherExclude": {
     "**/.git/**": true,
