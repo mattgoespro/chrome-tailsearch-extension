@@ -22,7 +22,6 @@ export default (_, env: { mode: Configuration["mode"] }) => {
   }
 
   const srcDir = path.resolve(__dirname, "src");
-  const contentScriptDir = path.join(srcDir, "content-script");
   const runtimeDir = path.join(srcDir, "runtime");
   const rendererDir = path.join(srcDir, "renderer");
 
@@ -33,7 +32,7 @@ export default (_, env: { mode: Configuration["mode"] }) => {
     devtool: mode === "development" ? "source-map" : false,
     entry: {
       background: path.join(runtimeDir, "background.ts"),
-      "content-script": path.join(contentScriptDir, "content-script.ts"),
+      "content-script": path.join(runtimeDir, "content-script.ts"),
       options: path.join(rendererDir, "options", "index.tsx"),
       popup: path.join(rendererDir, "popup", "index.tsx")
     },

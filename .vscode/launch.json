@@ -7,12 +7,11 @@
       "sourceMaps": true,
       "sourceMapRenames": true,
       "outFiles": ["${workspaceFolder}/dist/**/*.js"],
-      "preLaunchTask": "debug",
-      // map sourcemaps from `dist/js/*.js` to `src`
       "resolveSourceMapLocations": ["${workspaceFolder}/dist/**/*.map.js"],
       "env": {
         "NODE_ENV": "development"
-      }
+      },
+      "preLaunchTask": "dev"
     }
   ]
 }

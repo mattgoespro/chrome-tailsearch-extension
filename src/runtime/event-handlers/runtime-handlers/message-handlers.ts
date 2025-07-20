@@ -1,5 +1,5 @@
 import { RuntimePortMessageEvent } from "../../../shared/message-event";
-import { getChromeStorageData, updateChromeStorageData } from "../../../shared/storage";
+import { removeSearchTermOption, updateChromeStorageData } from "../../../shared/storage";
 import {
   updateContextMenu,
   ContextMenuOptionId,
@@ -44,24 +44,8 @@ export async function onSettingsPageMessageReceived(
   }
 }
 
-async function removeSearchTermOption(option: string) {
-  const currentData = await getChromeStorageData();
-  const options = currentData.searchTermOptions ?? [];
-  const updatedOptions = options.filter((opt) => opt !== option);
-  const updatedStorageData = await updateChromeStorageData({
-    searchTermOptions: updatedOptions
-  });
-
-  if (updatedStorageData.currentSearchTermOption === option) {
-    await disableContextMenuOption();
-    console.warn(
-      "The search term was unset from the settings page and the context menu option was disabled."
-    );
-  }
-}
-
 export async function onPopupPageMessageReceived(
-  message: RuntimePortMessageEvent<"set-current-search-term-option" | "remove-search-term-option">
+  message: RuntimePortMessageEvent<"set-current-search-term-option">
 ) {
   console.log(`Handling popup message: ${message.type}`);
 
@@ -70,20 +54,18 @@ export async function onPopupPageMessageReceived(
       await updateExtensionStateForSearchTerm(message.data.searchTerm);
       break;
     }
-    case "remove-search-term-option": {
-      await removeSearchTermOption(message.data.searchTerm);
-      break;
-    }
   }
 }
 
-export async function onContentScriptPortMessageReceived(message: RuntimePortMessageEvent) {
+export async function onContentScriptMessageReceived(
+  message: RuntimePortMessageEvent<"content-script-context-menu-opened">
+) {
   console.log(`Handling content script message: ${message.type}`);
   console.log(message);
 
   switch (message.type) {
     case "content-script-context-menu-opened": {
-      const msg = message as RuntimePortMessageEvent<"content-script-context-menu-opened">;
+      const msg = message;
       const updatedStorageData = await updateChromeStorageData({
         pageSelectedText: msg.data.selectedText
       });
@@ -93,7 +75,7 @@ export async function onContentScriptPortMessageReceived(message: RuntimePortMes
         console.warn(
           "The search term has been unset from somewhere, so the context menu option was disabled."
         );
-        return;
+        return true;
       }
 
       const menuOptionTitle = getContextMenuOptionTitle(
@@ -106,11 +88,11 @@ export async function onContentScriptPortMessageReceived(message: RuntimePortMes
         enabled: true
       });
 
-      console.log(
-        `Text selection triggered a context menu option title update -> '${menuOptionTitle}'`
-      );
+      console.log(`Context menu option title changed -> '${menuOptionTitle}'`);
+      break;
+    }
+    default: {
+      throw new Error(`Unhandled content script message type: ${message.type}`);
     }
   }
-
-  return true;
 }

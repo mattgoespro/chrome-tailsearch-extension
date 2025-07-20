@@ -15,8 +15,7 @@ document.addEventListener("mouseup", () => {
     data: { selectedText }
   };
 
-  console.log(`Selected text: ${selectedText}`);
-  console.log("Sending selected text port message:", textSelectedMessage);
+  console.log("Sending message from content script:", textSelectedMessage);
 
   port.postMessage(textSelectedMessage);
 });
