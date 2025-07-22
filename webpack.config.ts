@@ -39,7 +39,7 @@ export default (_, env: { mode: Configuration["mode"] }) => {
     output: {
       path: path.resolve(__dirname, "dist"),
       filename: "js/[name].js",
-      clean: mode === "production"
+      clean: true
     },
     resolve: {
       extensions: [".ts", ".tsx", ".js"],
@@ -55,7 +55,7 @@ export default (_, env: { mode: Configuration["mode"] }) => {
         }
       ]
     },
-    externals: ["React"], // TODO: is this needed?
+    // externals: ["React"], // TODO: is this needed?
     plugins: [
       new EnvironmentPlugin({
         EXTENSION_STORAGE_INITIAL_DATA: JSON.stringify(initialStorageData)
@@ -82,6 +82,9 @@ export default (_, env: { mode: Configuration["mode"] }) => {
       new ForkTsCheckerWebpackPlugin(),
       new CopyWebpackPlugin({
         patterns: [
+          /**
+           * Copy the manifest file, without the schema property which Chrome does not support.
+           */
           {
             from: path.join(srcDir, "manifest.json"),
             to: path.join(__dirname, "dist"),

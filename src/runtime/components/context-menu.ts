@@ -13,11 +13,15 @@ export async function updateContextMenu(
   return new Promise((resolve, reject) => {
     chrome.contextMenus.update(id, item, async () => {
       if (chrome.runtime.lastError != null) {
-        console.warn(
-          `Failed to update context menu item '${id}'. Chrome runtime encountered an error:`,
-          chrome.runtime.lastError
+        console.warn();
+        reject(
+          new Error(
+            [
+              `Failed to update context menu item '${id}'. Chrome runtime encountered an error:`,
+              chrome.runtime.lastError
+            ].join("\n")
+          )
         );
-        reject(new Error(chrome.runtime.lastError.message));
         return;
       }
 

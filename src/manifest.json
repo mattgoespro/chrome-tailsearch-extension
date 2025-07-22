@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/f46a56f2c27c325336b68130c88263a400808c61/src/schemas/json/chrome-manifest.json",
+  "$schema": "https://json.schemastore.org/chrome-manifest.json",
   "manifest_version": 3,
   "name": "TailSearch",
   "version": "1.0",
