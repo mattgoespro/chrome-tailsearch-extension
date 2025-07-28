@@ -11,7 +11,9 @@
   "scripts": {
     "dev": "webpack --config webpack.config.ts --mode development --watch",
     "build": "webpack --config webpack.config.ts --mode production",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "copy-extension-dist": "node -r ts-node/register tools/copy-extension-dist.ts",
+    "precopy-extension-dist": "npm run build"
   },
   "dependencies": {
     "@babel/runtime": "^7.27.6",
@@ -39,6 +41,7 @@
     "@html-eslint/parser": "^0.41.0",
     "@types/babel-core": "^6.25.10",
     "@types/chrome": "^0.0.326",
+    "@types/fs-extra": "^11.0.4",
     "@types/node": "^22.15.30",
     "@types/react": "^19.1.6",
     "@types/react-dom": "^19.1.6",

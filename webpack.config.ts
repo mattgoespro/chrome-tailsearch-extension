@@ -55,7 +55,6 @@ export default (_, env: { mode: Configuration["mode"] }) => {
         }
       ]
     },
-    // externals: ["React"], // TODO: is this needed?
     plugins: [
       new EnvironmentPlugin({
         EXTENSION_STORAGE_INITIAL_DATA: JSON.stringify(initialStorageData)
@@ -137,52 +136,17 @@ export default (_, env: { mode: Configuration["mode"] }) => {
             minimizer: [
               new TerserWebpackPlugin({
                 parallel: true,
-                extractComments: false,
-                include: /\.js$/,
+                extractComments: true,
                 terserOptions: {
-                  compress: true,
-                  mangle: true,
-                  format: {
-                    braces: true,
-                    max_line_len: 1000
-                  }
+                  compress: true
                 }
               })
             ],
-            concatenateModules: true,
-            splitChunks: {
-              chunks: "all",
-              cacheGroups: {
-                default: false,
-                vendors: false,
-                rendererShared: {
-                  name: "renderer.shared",
-                  test: /[\\/]renderer[\\/]shared[\\/]/,
-                  chunks: "all",
-                  enforce: true
-                },
-                renderer: {
-                  name: "renderer",
-                  test: /[\\/]renderer[\\/]/,
-                  chunks: "all",
-                  enforce: true
-                },
-                mui: {
-                  name: "mui",
-                  test: /[\\/]node_modules[\\/](@mui|@emotion)[\\/]/,
-                  chunks: "all",
-                  enforce: true
-                },
-                react: {
-                  name: "react",
-                  test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
-                  chunks: "all",
-                  enforce: true // Ensure React and ReactDOM are in a separate chunk
-                }
-              }
-            }
+            splitChunks: {}
           }
         : undefined,
+    performance:
+      mode === "production" ? { maxEntrypointSize: 512000, maxAssetSize: 512000 } : undefined,
     cache: {
       type: "filesystem",
       cacheDirectory: path.resolve(__dirname, ".buildcache")

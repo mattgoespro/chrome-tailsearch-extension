@@ -37,6 +37,13 @@
     "*.json": true,
     "*.{ts,js,mjs}": true
   },
+  "terminal.integrated.automationProfile.windows": {
+    "args": ["-l"],
+    "color": "terminal.ansiGreen",
+    "icon": "terminal-debian",
+    "overrideName": true,
+    "path": "C:\\Program Files\\Git\\bin\\bash.exe"
+  },
   "terminal.integrated.defaultProfile.windows": "bash-node",
   "terminal.integrated.profiles.windows": {
     "bash-node": {
