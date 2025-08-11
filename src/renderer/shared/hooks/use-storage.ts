@@ -1,9 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
 import {
   getChromeStorageData,
   TailsearchChromeStorageKey,
   TailsearchStorage
 } from "@shared/storage";
+import { useQuery } from "@tanstack/react-query";
 
 type TailsearchStorageQueryResult = {
   data: TailsearchStorage;

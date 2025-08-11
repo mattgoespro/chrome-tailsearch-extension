@@ -6,12 +6,12 @@ type RuntimePortMessagePayloads = {
 
 export type RuntimePortMessageName = keyof RuntimePortMessagePayloads;
 
-const RuntimePortMessageSources = ["options", "popup"];
+const RuntimePortMessageSources = ["options", "popup", "content-script"] as const;
 
 export type RuntimePortMessageSource = (typeof RuntimePortMessageSources)[number];
 
 export function isRuntimePort(name: string): name is RuntimePortMessageSource {
-  return RuntimePortMessageSources.includes(name);
+  return RuntimePortMessageSources.includes(name as RuntimePortMessageSource);
 }
 
 export type RuntimePortMessageEvent<T extends RuntimePortMessageName = RuntimePortMessageName> =

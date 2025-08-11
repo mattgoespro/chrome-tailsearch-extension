@@ -11,7 +11,9 @@
   },
   "debug.toolBarLocation": "commandCenter",
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "always"
+    "source.addMissingImports.ts": "always",
+    "source.fixAll.eslint": "always",
+    "source.removeUnusedImports": "never"
   },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "eslint.enable": true,
@@ -31,6 +33,7 @@
     "**/dist/**": true,
     "**/node_modules/**": true
   },
+  "prettier.configPath": ".prettierrc.mjs",
   "search.exclude": {
     "**/.vscode/**": true,
     "**/dist/**": true,

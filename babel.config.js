@@ -15,6 +15,7 @@ module.exports = {
     "@babel/preset-react"
   ],
   plugins: [
+    "@babel/plugin-transform-runtime",
     "@babel/plugin-transform-object-rest-spread",
     "@babel/plugin-transform-destructuring",
     "@babel/plugin-transform-class-properties"

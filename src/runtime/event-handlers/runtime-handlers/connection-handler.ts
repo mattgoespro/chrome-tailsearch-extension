@@ -1,10 +1,12 @@
+import { isRuntimePort } from "../../../shared/message-event";
 import { configurePort } from "./connections";
 
 export async function onReceivedConnection(port: chrome.runtime.Port) {
-  const { sender, name } = port;
-  const senderTabId = sender?.tab?.id != null ? sender.tab.id.toString() : name;
+  const { name } = port;
 
-  configurePort(senderTabId, port);
+  if (isRuntimePort(name)) {
+    configurePort(name, port);
+  }
 
   return true;
 }

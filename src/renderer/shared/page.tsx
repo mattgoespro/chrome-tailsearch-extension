@@ -1,11 +1,11 @@
 import { ThemeProvider } from "@emotion/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactNode } from "react";
 import { createRoot } from "react-dom/client";
+import { RuntimePortMessageSource } from "../../shared/message-event";
+import { TailsearchChromeStorageKey } from "../../shared/storage";
 import { PortContext } from "./contexts/port-context";
 import { theme } from "./theme";
-import { TailsearchChromeStorageKey } from "../../shared/storage";
-import { RuntimePortMessageSource } from "../../shared/message-event";
-import { ReactNode } from "react";
 
 export function createPage(source: RuntimePortMessageSource, page: ReactNode) {
   const root = document.getElementById("root");

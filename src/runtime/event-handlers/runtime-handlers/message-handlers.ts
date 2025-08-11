@@ -58,7 +58,9 @@ export async function onPopupPageMessageReceived(
 }
 
 export async function onContentScriptMessageReceived(
-  message: RuntimePortMessageEvent<"content-script-context-menu-opened">
+  message: RuntimePortMessageEvent<"content-script-context-menu-opened">,
+  _sender: chrome.runtime.MessageSender,
+  _sendResponse: (response?: unknown) => void
 ) {
   console.log(`Handling content script message: ${message.type}`);
   console.log(message);

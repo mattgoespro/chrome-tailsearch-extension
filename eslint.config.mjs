@@ -4,11 +4,11 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   {
-    ignores: ["temp", "node_modules/**/*", "dist/**/*"]
+    ignores: ["temp", "node_modules", "dist"]
   },
   {
     ...react.configs.flat.recommended,
-    files: ["src/renderer/**/*"],
+    files: ["src/renderer/**/*.ts", "src/renderer/**/*.tsx"],
     settings: {
       react: {
         version: "detect"
@@ -26,6 +26,7 @@ export default tseslint.config(
   html.configs["flat/recommended"],
   tseslint.configs.recommended,
   {
+    files: ["src/**/*.ts", "src/**/*.tsx"],
     rules: {
       "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": [

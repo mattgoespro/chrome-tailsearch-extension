@@ -11,7 +11,7 @@
   "scripts": {
     "dev": "webpack --config webpack.config.ts --mode development --watch",
     "build": "webpack --config webpack.config.ts --mode production",
-    "lint": "eslint src",
+    "lint": "eslint",
     "copy-extension-dist": "node -r ts-node/register tools/copy-extension-dist.ts",
     "precopy-extension-dist": "npm run build"
   },
@@ -22,8 +22,6 @@
     "@mui/icons-material": "^7.1.1",
     "@mui/material": "^7.1.1",
     "@tanstack/react-query": "^5.80.6",
-    "assert-browserify": "^2.0.0",
-    "console-browserify": "^1.2.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "uuid": "^11.1.0"
@@ -45,15 +43,9 @@
     "@types/node": "^22.15.30",
     "@types/react": "^19.1.6",
     "@types/react-dom": "^19.1.6",
-    "@types/webextension-polyfill": "^0.12.3",
     "@types/webpack": "^5.28.5",
     "babel-loader": "^10.0.0",
-    "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^13.0.0",
-    "cross-env": "^7.0.3",
-    "css-loader": "^7.1.2",
-    "dotenv": "^16.5.0",
-    "esbuild-loader": "^4.3.0",
     "eslint": "^9.28.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-import": "^2.31.0",
@@ -61,11 +53,8 @@
     "favicons": "^7.2.0",
     "favicons-webpack-plugin": "^6.0.1",
     "fork-ts-checker-webpack-plugin": "^9.1.0",
-    "globby": "^14.1.0",
     "html-webpack-plugin": "^5.6.3",
-    "mini-css-extract-plugin": "^2.9.2",
     "prettier": "^3.5.3",
-    "resolve-url-loader": "^5.0.0",
     "terser-webpack-plugin": "^5.3.14",
     "ts-node": "^10.9.2",
     "tsconfig-paths-webpack-plugin": "^4.2.0",
@@ -73,7 +62,6 @@
     "typescript-eslint": "^8.33.1",
     "webpack": "^5.99.9",
     "webpack-cli": "^6.0.1",
-    "webpack-ext-reloader": "^1.1.13",
-    "webpack-merge": "^6.0.1"
+    "webpack-ext-reloader": "^1.1.13"
   }
 }

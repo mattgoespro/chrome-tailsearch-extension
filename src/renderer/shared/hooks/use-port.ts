@@ -1,5 +1,5 @@
-import { useContext } from "react";
 import { RuntimePortMessageEvent, RuntimePortMessageName } from "../../../shared/message-event";
+import { useContext } from "react";
 import { PortContext } from "../contexts/port-context";
 
 export function usePort() {
