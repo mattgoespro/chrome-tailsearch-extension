@@ -13,19 +13,16 @@ document.addEventListener("mouseup", () => {
     data: { selectedText }
   };
 
-  chrome.runtime.sendMessage(textSelectedMessage, (response) => {
+  chrome.runtime.sendMessage(textSelectedMessage, () => {
     if (chrome.runtime.lastError) {
       // This happens if background is missing or extension is reloaded
       console.warn("Failed to send message to background:", chrome.runtime.lastError.message);
       return;
     }
-    // Optional: handle background's response
-    console.log("Background responded:", response);
   });
 });
 
-document.addEventListener("contextmenu", (event) => {
-  console.log("Detected context menu event", event);
+document.addEventListener("contextmenu", () => {
   const selectedText = document.getSelection().toString();
 
   if ((selectedText ?? "").trim().length === 0) {
@@ -38,13 +35,11 @@ document.addEventListener("contextmenu", (event) => {
     data: { selectedText }
   };
 
-  chrome.runtime.sendMessage(contextMenuMessage, (response) => {
+  chrome.runtime.sendMessage(contextMenuMessage, () => {
     if (chrome.runtime.lastError) {
       // This happens if background is missing or extension is reloaded
       console.warn("Failed to send message to background:", chrome.runtime.lastError.message);
       return;
     }
-    // Optional: handle background's response
-    console.log("Background responded:", response);
   });
 });

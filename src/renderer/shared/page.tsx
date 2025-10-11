@@ -23,7 +23,6 @@ export function createPage(source: RuntimePortMessageSource, page: ReactNode) {
   });
 
   chrome.storage.onChanged.addListener(() => {
-    console.log("Storage changed, refetching queries...");
     queryClient.refetchQueries({
       queryKey: [TailsearchChromeStorageKey],
       exact: true,

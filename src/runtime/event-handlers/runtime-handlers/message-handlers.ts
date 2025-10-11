@@ -62,9 +62,6 @@ export async function onContentScriptMessageReceived(
   _sender: chrome.runtime.MessageSender,
   _sendResponse: (response?: unknown) => void
 ) {
-  console.log(`Handling content script message: ${message.type}`);
-  console.log(message);
-
   switch (message.type) {
     case "content-script-context-menu-opened": {
       const msg = message;

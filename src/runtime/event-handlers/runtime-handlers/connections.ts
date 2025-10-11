@@ -10,7 +10,7 @@ const ActivePorts: ActivePortMap = new Map();
 
 export function configurePort(tabId: RuntimePortMessageSource, port: chrome.runtime.Port) {
   ActivePorts.set(tabId, port);
-  console.log("Added connection for tab:", tabId);
+  console.log("Added connection for tab ID:", tabId);
 
   /**
    * Known runtime ports are only registered once, so they do not need to be disconnected.
@@ -26,7 +26,7 @@ export function configurePort(tabId: RuntimePortMessageSource, port: chrome.runt
       console.log(`Registered popup page connection.`);
       break;
     default:
-      throw new Error(`Connection received from unknown runtime port: ${tabId}`);
+      throw new Error(`Attempted to configure port from unrecognized runtime port: ${tabId}`);
   }
 }
 

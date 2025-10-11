@@ -25,7 +25,6 @@ chrome.runtime.onMessage.addListener(onContentScriptMessageReceived);
 chrome.contextMenus.onClicked.addListener(onContextMenuOptionClicked);
 
 /**
- * Listeners related to the tab lifecycle.
+ * Listeners related to the tab lifecycle, especially for handling URL changes during navigation.
  */
-// Listen for forward/backward navigation in the current tab.
 chrome.tabs.onUpdated.addListener(onTabUpdated);

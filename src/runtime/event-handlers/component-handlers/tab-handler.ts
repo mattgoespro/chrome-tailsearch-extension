@@ -7,6 +7,10 @@ export function onTabUpdated(
 ) {
   if (changeInfo.url != null) {
     withConnectionHandler((activePorts) => {
+      if (!activePorts.has(tabId)) {
+        throw new Error(`Cannot handle tab URL change for unregistered port: ${tabId}`);
+      }
+
       // We need to reconnect the content script port to the new URL.
       const port = activePorts.get(tabId);
       if (port != null) {
@@ -15,7 +19,6 @@ export function onTabUpdated(
           source: "content-script",
           data: { tabId, changeInfo, tab }
         });
-        console.log(`Sent tab updated message for tab ${tabId} to content script.`);
       }
     });
   }

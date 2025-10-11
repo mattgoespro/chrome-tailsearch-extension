@@ -3,20 +3,18 @@
   "exclude": ["node_modules"],
   "compilerOptions": {
     "module": "commonjs",
-    "jsx": "react-jsx",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "baseUrl": ".",
-    "lib": ["dom", "es2022"],
-    "outDir": "dist",
     "target": "es6",
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "lib": ["dom", "es2022"],
+    "jsx": "react-jsx",
     "types": ["node", "react", "chrome"],
+    "outDir": "dist",
+    "skipLibCheck": true,
     "paths": {
       "@shared/*": ["src/shared/*"]
-    },
-    "allowJs": true,
-    "strict": false,
-    "esModuleInterop": true,
-    "skipLibCheck": true
+    }
   }
 }

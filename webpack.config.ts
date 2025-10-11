@@ -12,7 +12,7 @@ import TerserWebpackPlugin from "terser-webpack-plugin";
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const ExtensionReloaderWebpackPlugin: typeof ExtensionReloader = require("webpack-ext-reloader");
 
-export default (_, env: { mode: Configuration["mode"] }) => {
+export default (_: unknown, env: { mode: Configuration["mode"] }) => {
   const { mode } = env;
 
   if (initialStorageData == null) {
@@ -29,7 +29,7 @@ export default (_, env: { mode: Configuration["mode"] }) => {
     target: "web",
     mode,
     stats: "errors-warnings",
-    devtool: mode === "development" ? "source-map" : false,
+    devtool: "inline-source-map",
     entry: {
       background: path.join(runtimeDir, "background.ts"),
       "content-script": path.join(runtimeDir, "content-script.ts"),
