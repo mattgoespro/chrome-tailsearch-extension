@@ -30,6 +30,13 @@ export function configurePort(tabId: RuntimePortMessageSource, port: chrome.runt
   }
 }
 
-export function withConnectionHandler(handler: (activePorts: ActivePortMap) => void) {
-  handler(ActivePorts);
+export function withConnectionHandler(
+  connectionId: string | number,
+  handler: (connectionPort: chrome.runtime.Port, activePorts: ActivePortMap) => void
+) {
+  if (!ActivePorts.has(connectionId)) {
+    throw new Error(`Cannot handle tab URL change for unregistered port: ${connectionId}`);
+  }
+
+  handler(ActivePorts.get(connectionId), ActivePorts);
 }

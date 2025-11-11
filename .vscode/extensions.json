@@ -18,7 +18,7 @@
     "yoavbls.pretty-ts-errors",
     "amodio.tsl-problem-matcher",
     "naumovs.color-highlight",
-    "eamodio.gitlens",
-    "helgardrichard.helium-icon-theme"
+    "helgardrichard.helium-icon-theme",
+    "aaron-bond.better-comments"
   ]
 }

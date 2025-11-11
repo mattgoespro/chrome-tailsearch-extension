@@ -2,7 +2,7 @@ export function createTailSearchQueryUrl(selectedText: string, searchTerm: strin
   const url = `https://www.google.com/search?q=${encodeURIComponent(`${selectedText} ${searchTerm}`)}`;
 
   if (!URL.canParse(url)) {
-    throw new Error(`Cannot TailSearch an invalid URL: ${url}`);
+    throw new Error(`Invalid TailSearch URL constructed: ${url}`);
   }
 
   return url;

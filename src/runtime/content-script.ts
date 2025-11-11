@@ -7,19 +7,23 @@ document.addEventListener("mouseup", () => {
     return;
   }
 
-  const textSelectedMessage: RuntimePortMessageEvent<"content-script-context-menu-opened"> = {
-    type: "content-script-context-menu-opened",
-    source: "content-script",
-    data: { selectedText }
-  };
-
-  chrome.runtime.sendMessage(textSelectedMessage, () => {
-    if (chrome.runtime.lastError) {
-      // This happens if background is missing or extension is reloaded
-      console.warn("Failed to send message to background:", chrome.runtime.lastError.message);
-      return;
+  chrome.runtime.sendMessage(
+    <RuntimePortMessageEvent<"content-script-context-menu-opened">>{
+      type: "content-script-context-menu-opened",
+      source: "content-script",
+      data: { selectedText }
+    },
+    () => {
+      if (chrome.runtime.lastError) {
+        // Background is missing or extension is reloaded
+        console.warn(
+          "Content script failed to send message to background: ",
+          chrome.runtime.lastError
+        );
+        return;
+      }
     }
-  });
+  );
 });
 
 document.addEventListener("contextmenu", () => {
@@ -29,17 +33,20 @@ document.addEventListener("contextmenu", () => {
     return;
   }
 
-  const contextMenuMessage: RuntimePortMessageEvent<"content-script-context-menu-opened"> = {
-    type: "content-script-context-menu-opened",
-    source: "content-script",
-    data: { selectedText }
-  };
-
-  chrome.runtime.sendMessage(contextMenuMessage, () => {
-    if (chrome.runtime.lastError) {
-      // This happens if background is missing or extension is reloaded
-      console.warn("Failed to send message to background:", chrome.runtime.lastError.message);
-      return;
+  chrome.runtime.sendMessage(
+    <RuntimePortMessageEvent<"content-script-context-menu-opened">>{
+      type: "content-script-context-menu-opened",
+      source: "content-script",
+      data: { selectedText }
+    },
+    () => {
+      if (chrome.runtime.lastError) {
+        console.warn(
+          "Content script failed to send message to background: ",
+          chrome.runtime.lastError.message
+        );
+        return;
+      }
     }
-  });
+  );
 });

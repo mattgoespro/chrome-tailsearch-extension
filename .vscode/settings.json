@@ -16,6 +16,9 @@
     "source.removeUnusedImports": "never"
   },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.fontFamily": "Fira Code, Ubuntu Mono, monospace",
+  "editor.fontSize": 11,
+  "editor.letterSpacing": -0.3,
   "eslint.enable": true,
   "eslint.format.enable": false,
   "eslint.probe": ["typescript", "typescriptreact", "html"],
@@ -48,6 +51,8 @@
     "path": "C:\\Program Files\\Git\\bin\\bash.exe"
   },
   "terminal.integrated.defaultProfile.windows": "bash-node",
+  "terminal.integrated.fontFamily": "Hack, Fira Code, Ubuntu Mono, monospace",
+  "terminal.integrated.fontSize": 11,
   "terminal.integrated.profiles.windows": {
     "bash-node": {
       "args": ["-l"],
