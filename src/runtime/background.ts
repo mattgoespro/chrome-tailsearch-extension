@@ -1,8 +1,8 @@
-import { onReceivedConnection } from "./event-handlers/runtime-handlers/connection-handler";
+import { onReceivedConnection } from "./event-handlers/extension-handlers/connection-handler";
 import { onContextMenuOptionClicked } from "./event-handlers/component-handlers/context-menu-handler";
-import { onInstalled } from "./event-handlers/runtime-handlers/runtime-handler";
+import { onInstalled } from "./event-handlers/extension-handlers/runtime-handler";
 import { onTabUpdated } from "./event-handlers/component-handlers/tab-handler";
-import { onContentScriptMessageReceived } from "./event-handlers/runtime-handlers/message-handlers";
+import { onContentScriptMessageReceived } from "./event-handlers/extension-handlers/message-handlers";
 
 /**
  * Listeners related to the extension lifecycle.

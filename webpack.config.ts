@@ -24,6 +24,7 @@ export default (_: unknown, env: { mode: Configuration["mode"] }) => {
   const srcDir = path.resolve(__dirname, "src");
   const runtimeDir = path.join(srcDir, "runtime");
   const rendererDir = path.join(srcDir, "renderer");
+  const outputDir = path.resolve(__dirname, "out");
 
   return {
     target: "web",
@@ -37,7 +38,7 @@ export default (_: unknown, env: { mode: Configuration["mode"] }) => {
       popup: path.join(rendererDir, "popup", "index.tsx")
     },
     output: {
-      path: path.resolve(__dirname, "dist"),
+      path: outputDir,
       filename: "js/[name].js",
       clean: true
     },
@@ -81,23 +82,13 @@ export default (_: unknown, env: { mode: Configuration["mode"] }) => {
       new ForkTsCheckerWebpackPlugin(),
       new CopyWebpackPlugin({
         patterns: [
-          /**
-           * Copy the manifest file, without the schema property which Chrome does not support.
-           */
           {
             from: path.join(srcDir, "manifest.json"),
-            to: path.join(__dirname, "dist"),
+            to: outputDir,
             transform: (content) => {
               const manifestContent = JSON.parse(content.toString());
-
-              return JSON.stringify(
-                {
-                  ...manifestContent,
-                  schema: undefined
-                },
-                null,
-                2
-              );
+              delete manifestContent.$schema;
+              return JSON.stringify(manifestContent, null, 2);
             }
           }
         ]
@@ -147,9 +138,6 @@ export default (_: unknown, env: { mode: Configuration["mode"] }) => {
         : undefined,
     performance:
       mode === "production" ? { maxEntrypointSize: 512000, maxAssetSize: 512000 } : undefined,
-    cache: {
-      type: "filesystem",
-      cacheDirectory: path.resolve(__dirname, ".buildcache")
-    }
+    cache: true
   } satisfies Configuration;
 };

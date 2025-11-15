@@ -1,4 +1,4 @@
-import { getChromeStorageData } from "../../../shared/storage";
+import { getStorageData } from "../../../shared/storage";
 import { createTailSearchQueryUrl } from "../../../shared/model";
 import { ContextMenuOptionId } from "../../components/context-menu";
 
@@ -8,7 +8,7 @@ export async function onContextMenuOptionClicked({
 }: chrome.contextMenus.OnClickData) {
   switch (menuItemId) {
     case ContextMenuOptionId: {
-      const { currentSearchTermOption } = await getChromeStorageData();
+      const { currentSearchTermOption } = await getStorageData();
 
       console.log("Text used to open context menu option:", selectionText);
 

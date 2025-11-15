@@ -1,5 +1,5 @@
 import { RuntimePortMessageEvent } from "../../../shared/message-event";
-import { removeSearchTermOption, updateChromeStorageData } from "../../../shared/storage";
+import { removeSearchTermOption, updateStorageData } from "../../../shared/storage";
 import {
   updateContextMenu,
   ContextMenuOptionId,
@@ -16,7 +16,7 @@ async function updateExtensionStateForSearchTerm(searchTerm: string) {
     return;
   }
 
-  const updatedData = await updateChromeStorageData({
+  const updatedData = await updateStorageData({
     currentSearchTermOption: searchTerm
   });
 
@@ -65,7 +65,7 @@ export async function onContentScriptMessageReceived(
   switch (message.type) {
     case "content-script-context-menu-opened": {
       const msg = message;
-      const updatedStorageData = await updateChromeStorageData({
+      const updatedStorageData = await updateStorageData({
         pageSelectedText: msg.data.selectedText
       });
 

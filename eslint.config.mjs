@@ -4,7 +4,7 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   {
-    ignores: ["temp", "node_modules", "dist"]
+    ignores: ["temp", "node_modules", "out", "dist"]
   },
   {
     ...react.configs.flat.recommended,
@@ -26,7 +26,7 @@ export default tseslint.config(
   html.configs["flat/recommended"],
   tseslint.configs.recommended,
   {
-    files: ["src/**/*.ts", "src/**/*.tsx"],
+    files: ["src/**/*.ts", "src/**/*.tsx", "scripts/**/*.ts"],
     rules: {
       "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": [

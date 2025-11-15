@@ -1,6 +1,7 @@
 import fs from "fs-extra";
 import path from "path";
 import os from "os";
+import packageJson from "../package.json";
 
 const destinationDir = path.join(
   os.homedir(),
@@ -9,7 +10,7 @@ const destinationDir = path.join(
   "Google",
   "Chrome",
   "Unpacked Extensions",
-  "chrome-tailsearch-extension-unpacked"
+  `${packageJson.name}-${packageJson.version}-unpacked`
 );
 
 fs.ensureDirSync(destinationDir, { mode: 0o755 });

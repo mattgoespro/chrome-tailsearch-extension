@@ -1,9 +1,9 @@
-import { getChromeStorageData } from "../../../shared/storage";
+import { getStorageData } from "../../../shared/storage";
 import { createTailSearchQueryUrl } from "../../../shared/model";
 
 export async function onActionClicked(tab: chrome.tabs.Tab) {
   const { currentSearchTermOption: appendText, pageSelectedText: selectedText } =
-    await getChromeStorageData();
+    await getStorageData();
 
   const searchTerm = [selectedText, appendText].join(" ");
 

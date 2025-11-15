@@ -8,22 +8,22 @@ export type TailsearchStorage = {
   searchTermOptions?: string[];
 };
 
-export async function getChromeStorageData(): Promise<TailsearchStorage> {
-  return chrome.storage.sync.get<TailsearchStorage>();
+export async function getStorageData(): Promise<TailsearchStorage> {
+  return browser.storage.local.get(TailsearchChromeStorageKey);
 }
 
-export async function updateChromeStorageData(
+export async function updateStorageData(
   value: Partial<TailsearchStorage>
 ): Promise<TailsearchStorage> {
-  await chrome.storage.sync.set<TailsearchStorage>({ ...value });
-  return getChromeStorageData();
+  await browser.storage.local.set({ ...value });
+  return getStorageData();
 }
 
 export async function removeSearchTermOption(option: string) {
-  const currentData = await getChromeStorageData();
+  const currentData = await getStorageData();
   const options = currentData.searchTermOptions ?? [];
   const updatedOptions = options.filter((opt) => opt !== option);
-  const updatedStorageData = await updateChromeStorageData({
+  const updatedStorageData = await updateStorageData({
     searchTermOptions: updatedOptions
   });
 

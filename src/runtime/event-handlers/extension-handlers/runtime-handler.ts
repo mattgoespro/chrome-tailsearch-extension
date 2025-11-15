@@ -1,4 +1,4 @@
-import { updateChromeStorageData } from "../../../shared/storage";
+import { updateStorageData } from "../../../shared/storage";
 import { onActionClicked } from "../component-handlers/action-handler";
 import {
   ContextMenuOptionId,
@@ -22,7 +22,7 @@ export async function onInstalled() {
   if (EXTENSION_STORAGE_INITIAL_DATA != null) {
     const initialData = { ...JSON.parse(EXTENSION_STORAGE_INITIAL_DATA) };
 
-    await updateChromeStorageData(initialData);
+    await updateStorageData(initialData);
 
     contextMenuCreateProps.enabled = true;
     contextMenuCreateProps.title = getContextMenuOptionTitle("", initialData.appendedText);
