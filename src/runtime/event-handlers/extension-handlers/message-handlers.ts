@@ -1,8 +1,8 @@
 import { RuntimePortMessageEvent } from "../../../shared/message-event";
 import { removeSearchTermOption, updateStorageData } from "../../../shared/storage";
 import {
-  updateContextMenu,
-  ContextMenuOptionId,
+  updateContextMenuOption,
+  TailsearchContextMenuOptionId,
   getContextMenuOptionTitle,
   disableContextMenuOption
 } from "../../components/context-menu";
@@ -10,8 +10,8 @@ import {
 async function updateExtensionStateForSearchTerm(searchTerm: string) {
   if (searchTerm == null) {
     await disableContextMenuOption();
-    console.warn(
-      "The text to append was unset from the settings page, disabling context menu option."
+    console.info(
+      "The text to append was unset from the settings page. The context menu option has been disabled."
     );
     return;
   }
@@ -20,7 +20,7 @@ async function updateExtensionStateForSearchTerm(searchTerm: string) {
     currentSearchTermOption: searchTerm
   });
 
-  await updateContextMenu(ContextMenuOptionId, {
+  await updateContextMenuOption(TailsearchContextMenuOptionId, {
     title: getContextMenuOptionTitle(updatedData.pageSelectedText, searchTerm),
     enabled: true
   });
@@ -29,12 +29,9 @@ async function updateExtensionStateForSearchTerm(searchTerm: string) {
 export async function onSettingsPageMessageReceived(
   message: RuntimePortMessageEvent<"set-current-search-term-option" | "remove-search-term-option">
 ) {
-  console.log(`Handling setting page message: ${message.type}`);
-
   switch (message.type) {
     case "set-current-search-term-option": {
       await updateExtensionStateForSearchTerm(message.data.searchTerm);
-      console.log("Updated extension state for search term:", message.data.searchTerm);
       break;
     }
     case "remove-search-term-option": {
@@ -47,8 +44,6 @@ export async function onSettingsPageMessageReceived(
 export async function onPopupPageMessageReceived(
   message: RuntimePortMessageEvent<"set-current-search-term-option">
 ) {
-  console.log(`Handling popup message: ${message.type}`);
-
   switch (message.type) {
     case "set-current-search-term-option": {
       await updateExtensionStateForSearchTerm(message.data.searchTerm);
@@ -64,15 +59,14 @@ export async function onContentScriptMessageReceived(
 ) {
   switch (message.type) {
     case "content-script-context-menu-opened": {
-      const msg = message;
       const updatedStorageData = await updateStorageData({
-        pageSelectedText: msg.data.selectedText
+        pageSelectedText: message.data.selectedText
       });
 
       if (updatedStorageData.currentSearchTermOption == null) {
         await disableContextMenuOption();
-        console.warn(
-          "The search term has been unset from somewhere, so the context menu option was disabled."
+        console.info(
+          "The current search term option is unset. The context menu option has been disabled."
         );
         return true;
       }
@@ -82,16 +76,13 @@ export async function onContentScriptMessageReceived(
         updatedStorageData.currentSearchTermOption
       );
 
-      await updateContextMenu(ContextMenuOptionId, {
+      await updateContextMenuOption(TailsearchContextMenuOptionId, {
         title: menuOptionTitle,
         enabled: true
       });
 
-      console.log(`Context menu option title changed -> '${menuOptionTitle}'`);
+      console.log(`Context menu option title updated -> '${menuOptionTitle}'`);
       break;
-    }
-    default: {
-      throw new Error(`Unhandled content script message type: ${message.type}`);
     }
   }
 }

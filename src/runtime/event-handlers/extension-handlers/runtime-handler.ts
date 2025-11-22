@@ -1,15 +1,15 @@
 import { updateStorageData } from "../../../shared/storage";
 import { onActionClicked } from "../component-handlers/action-handler";
 import {
-  ContextMenuOptionId,
-  ContextMenuOptionDisabledText,
+  TailsearchContextMenuOptionId,
+  TailsearchContextMenuOptionDisabledText,
   getContextMenuOptionTitle
 } from "../../components/context-menu";
 
 export async function onInstalled() {
   const contextMenuCreateProps: chrome.contextMenus.CreateProperties = {
-    id: ContextMenuOptionId,
-    title: ContextMenuOptionDisabledText,
+    id: TailsearchContextMenuOptionId,
+    title: TailsearchContextMenuOptionDisabledText,
     enabled: false,
     contexts: ["selection"]
   };
@@ -21,7 +21,6 @@ export async function onInstalled() {
 
   if (EXTENSION_STORAGE_INITIAL_DATA != null) {
     const initialData = { ...JSON.parse(EXTENSION_STORAGE_INITIAL_DATA) };
-
     await updateStorageData(initialData);
 
     contextMenuCreateProps.enabled = true;

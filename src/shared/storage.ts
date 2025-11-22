@@ -9,13 +9,13 @@ export type TailsearchStorage = {
 };
 
 export async function getStorageData(): Promise<TailsearchStorage> {
-  return browser.storage.local.get(TailsearchChromeStorageKey);
+  return chrome.storage.sync.get() as Promise<TailsearchStorage>;
 }
 
 export async function updateStorageData(
   value: Partial<TailsearchStorage>
 ): Promise<TailsearchStorage> {
-  await browser.storage.local.set({ ...value });
+  await chrome.storage.sync.set(value);
   return getStorageData();
 }
 

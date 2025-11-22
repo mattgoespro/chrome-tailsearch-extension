@@ -109,13 +109,19 @@ export const theme = createTheme({
     }
   }),
   components: {
-    MuiContainer: {
+    MuiPaper: {
       defaultProps: {
-        maxWidth: "md",
-        sx: {
+        elevation: 1
+      },
+      styleOverrides: {
+        root: ({ theme }) => ({
           display: "flex",
-          padding: 0
-        }
+          gap: theme.spacing(1),
+          margin: theme.spacing(1),
+          padding: theme.spacing(1),
+          backgroundColor: theme.palette.background.paper,
+          color: theme.palette.primary.contrastText
+        })
       }
     },
     MuiButton: {
@@ -194,7 +200,6 @@ export const theme = createTheme({
       ]
     }
   },
-  spacing: 2,
   shape: {
     borderRadius: 4
   }

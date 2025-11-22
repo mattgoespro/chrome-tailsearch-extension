@@ -1,17 +1,19 @@
-import { useStorage } from "../../shared/hooks/use-storage";
-import { SearchTermInput } from "../../shared/components/search-term-input/search-term-input";
+import { Add, AddCard, Create } from "@mui/icons-material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { FormHelperText } from "@mui/material";
+import Box from "@mui/material/Box";
 import FormGroup from "@mui/material/FormGroup";
-import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { uuid } from "../../../shared/uuid";
-import { FormHelperText } from "@mui/material";
 import Paper from "@mui/material/Paper";
-import { usePort } from "../../shared/hooks/use-port";
+import Typography from "@mui/material/Typography";
+import { useMemo } from "react";
+import { uuid } from "../../../shared/uuid";
 import { FlexBox } from "../../shared/components/flex-box";
-import Box from "@mui/material/Box";
+import { SearchTermInput } from "../../shared/components/search-term-input/search-term-input";
+import { usePort } from "../../shared/hooks/use-port";
+import { useStorage } from "../../shared/hooks/use-storage";
 
 export function Settings() {
   const { data, loading, error } = useStorage();
@@ -25,35 +27,31 @@ export function Settings() {
     });
   }
 
-  return (
-    <FlexBox direction="column" align="center" maxWidth="md">
-      <Typography variant="h1">TailSearch Settings</Typography>
-      {(error == null && (
-        <Box maxWidth="md">
-          <FormGroup>
-            <FormHelperText required>Search Term</FormHelperText>
-            <SearchTermInput />
-          </FormGroup>
-        </Box>
-      )) || (
+  const Error = useMemo(
+    () =>
+      error && (
         <Typography color="error" variant="overline">
           Error: {error.message}
         </Typography>
-      )}
-      {!loading && data.searchTermOptions?.length > 0 && (
-        <List dense>
-          {data.searchTermOptions.map((option) => (
-            <Paper
-              elevation={0.5}
-              key={uuid()}
-              sx={(theme) => ({
-                margin: theme.spacing(1),
-                padding: theme.spacing(1),
-                backgroundColor: theme.palette.background.paper,
-                display: "flex",
-                gap: theme.spacing(1)
-              })}
-            >
+      ),
+    [error]
+  );
+
+  return (
+    <FlexBox direction="column" align="center">
+      <Typography variant="h1">TailSearch Settings</Typography>
+      <Box width="100%">
+        <FormGroup>
+          <FormHelperText required>Search Term</FormHelperText>
+          <SearchTermInput />
+        </FormGroup>
+      </Box>
+      {error && Error}
+      <List dense>
+        {!error &&
+          !loading &&
+          (data?.searchTermOptions ?? []).map((option) => (
+            <Paper key={uuid()}>
               <ListItem
                 secondaryAction={
                   <IconButton size="small" edge="end" onClick={handleDeleteOption} value={option}>
@@ -65,8 +63,12 @@ export function Settings() {
               </ListItem>
             </Paper>
           ))}
-        </List>
-      )}
+        <ListItem>
+          <IconButton disabled size="small" color="primary">
+            <Add />
+          </IconButton>
+        </ListItem>
+      </List>
     </FlexBox>
   );
 }

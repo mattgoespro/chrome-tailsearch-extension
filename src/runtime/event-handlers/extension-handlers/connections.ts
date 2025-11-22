@@ -8,14 +8,13 @@ type ActivePortMap = Map<
 
 const ActivePorts: ActivePortMap = new Map();
 
-export function configurePort(tabId: RuntimePortMessageSource, port: chrome.runtime.Port) {
-  ActivePorts.set(tabId, port);
-  console.log("Added connection for tab ID:", tabId);
+export function configurePort(source: RuntimePortMessageSource, port: chrome.runtime.Port) {
+  ActivePorts.set(source, port);
 
   /**
    * Known runtime ports are only registered once, so they do not need to be disconnected.
    */
-  switch (tabId) {
+  switch (source) {
     case "options": {
       port.onMessage.addListener(onSettingsPageMessageReceived);
       console.log(`Registered settings page connection.`);
@@ -26,7 +25,7 @@ export function configurePort(tabId: RuntimePortMessageSource, port: chrome.runt
       console.log(`Registered popup page connection.`);
       break;
     default:
-      throw new Error(`Attempted to configure port from unrecognized runtime port: ${tabId}`);
+      throw new Error(`Attempted to configure port from unrecognized runtime port: ${source}`);
   }
 }
 
@@ -35,7 +34,7 @@ export function withConnectionHandler(
   handler: (connectionPort: chrome.runtime.Port, activePorts: ActivePortMap) => void
 ) {
   if (!ActivePorts.has(connectionId)) {
-    throw new Error(`Cannot handle tab URL change for unregistered port: ${connectionId}`);
+    throw new Error(`Attempted to use unregistered connection: ${connectionId}`);
   }
 
   handler(ActivePorts.get(connectionId), ActivePorts);

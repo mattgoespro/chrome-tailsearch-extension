@@ -17,15 +17,19 @@ export function SearchTermInput() {
   }
 
   return (
-    <FormControl required>
+    <FormControl>
       <Autocomplete
+        fullWidth
         value={data?.currentSearchTermOption ?? null}
         loading={loading}
         loadingText="Loading..."
-        options={!loading && data.searchTermOptions != null ? data.searchTermOptions : []}
+        options={
+          !loading && !error && data?.searchTermOptions != null ? data.searchTermOptions : []
+        }
+        slotProps={{ listbox: { sx: { flex: 1 } } }}
         noOptionsText={error != null ? error.message : "No options"}
         onChange={onValueChange}
-        renderInput={(params) => <TextField {...params} color="primary" size="small" />}
+        renderInput={(params) => <TextField fullWidth {...params} color="primary" size="small" />}
       />
     </FormControl>
   );

@@ -66,7 +66,7 @@ export default (_: unknown, env: { mode: Configuration["mode"] }) => {
       new HtmlWebpackPlugin({
         filename: "options.html",
         template: path.join(rendererDir, "options", "index.html"),
-        chunks: ["options", "renderer.shared"],
+        chunks: ["options"],
         excludeChunks: ["popup"],
         inject: "body",
         minify: mode === "production"
@@ -74,7 +74,7 @@ export default (_: unknown, env: { mode: Configuration["mode"] }) => {
       new HtmlWebpackPlugin({
         filename: "popup.html",
         template: path.join(rendererDir, "popup", "index.html"),
-        chunks: ["popup", "renderer.shared"],
+        chunks: ["popup"],
         excludeChunks: ["options"],
         inject: "body",
         minify: mode === "production"
@@ -88,6 +88,12 @@ export default (_: unknown, env: { mode: Configuration["mode"] }) => {
             transform: (content) => {
               const manifestContent = JSON.parse(content.toString());
               delete manifestContent.$schema;
+
+              if (mode === "development") {
+                manifestContent.name += " (Dev)";
+                manifestContent.description += " (Development Build)";
+              }
+
               return JSON.stringify(manifestContent, null, 2);
             }
           }

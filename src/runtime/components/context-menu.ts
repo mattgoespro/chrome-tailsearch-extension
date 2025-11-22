@@ -1,38 +1,21 @@
-export const ContextMenuOptionId = "searchAppendedText";
-export const ContextMenuOptionDisabledText =
+export const TailsearchContextMenuOptionId = "tailsearch-context-menu-option";
+export const TailsearchContextMenuOptionDisabledText =
   "Configure and select a TailSearch search term option to search by.";
 
 export function getContextMenuOptionTitle(selectedText: string, appendText: string) {
   return `TailSearch '${selectedText} ${appendText}'`;
 }
 
-export async function updateContextMenu(
+export async function updateContextMenuOption(
   id: string,
   item: Omit<Partial<chrome.contextMenus.CreateProperties>, "id">
 ): Promise<void> {
-  return new Promise((resolve, reject) => {
-    chrome.contextMenus.update(id, item, async () => {
-      if (chrome.runtime.lastError != null) {
-        console.warn();
-        reject(
-          new Error(
-            [
-              `Failed to update context menu item '${id}'. Chrome runtime encountered an error:`,
-              chrome.runtime.lastError
-            ].join("\n")
-          )
-        );
-        return;
-      }
-
-      resolve();
-    });
-  });
+  await chrome.contextMenus.update(id, item);
 }
 
 export async function disableContextMenuOption(): Promise<void> {
-  return updateContextMenu(ContextMenuOptionId, {
-    title: ContextMenuOptionDisabledText,
+  return updateContextMenuOption(TailsearchContextMenuOptionId, {
+    title: TailsearchContextMenuOptionDisabledText,
     enabled: false
   });
 }

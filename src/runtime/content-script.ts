@@ -15,7 +15,6 @@ document.addEventListener("mouseup", () => {
     },
     () => {
       if (chrome.runtime.lastError) {
-        // Background is missing or extension is reloaded
         console.warn(
           "Content script failed to send message to background: ",
           chrome.runtime.lastError
