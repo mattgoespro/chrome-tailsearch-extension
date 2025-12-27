@@ -14,7 +14,7 @@ const destinationDir = path.join(
 );
 
 fs.ensureDirSync(destinationDir, { mode: 0o755 });
-const sourceDirectory = path.resolve(__dirname, "..", "dist");
+const sourceDirectory = path.resolve(__dirname, "..", "out");
 
 console.log(`Copying unpacked extension -> ${destinationDir}`);
 

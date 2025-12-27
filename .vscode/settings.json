@@ -38,10 +38,10 @@
   },
   "prettier.configPath": ".prettierrc.mjs",
   "search.exclude": {
-    "**/.vscode/**": true,
-    "**/dist/**": true,
-    "*.json": true,
-    "*.{ts,js,mjs}": true
+    // "**/.vscode/**": true,
+    // "**/dist/**": true,
+    // "*.json": true,
+    // "*.{ts,js,mjs}": true
   },
   "terminal.integrated.automationProfile.windows": {
     "args": ["-l"],

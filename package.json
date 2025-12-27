@@ -1,5 +1,5 @@
 {
-  "name": "chrome-appended-text-search-extension",
+  "name": "chrome-tailsearch-extension",
   "version": "0.0.1",
   "description": "Chrome extension to search Google with an appended text string to the current selection.",
   "private": true,

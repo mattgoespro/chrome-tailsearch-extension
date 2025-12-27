@@ -30,7 +30,7 @@ export default (_: unknown, env: { mode: Configuration["mode"] }) => {
     target: "web",
     mode,
     stats: "errors-warnings",
-    devtool: "inline-source-map",
+    devtool: mode === "development" ? "cheap-module-source-map" : false,
     entry: {
       background: path.join(runtimeDir, "background.ts"),
       "content-script": path.join(runtimeDir, "content-script.ts"),
