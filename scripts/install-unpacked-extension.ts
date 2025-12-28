@@ -13,24 +13,14 @@ const destinationDir = path.join(
   `${packageJson.name}-${packageJson.version}-unpacked`
 );
 
-fs.ensureDirSync(destinationDir, { mode: 0o755 });
+fs.ensureDirSync(destinationDir);
 const sourceDirectory = path.resolve(__dirname, "..", "out");
 
 console.log(`Copying unpacked extension -> ${destinationDir}`);
 
-fs.copy(
-  sourceDirectory,
-  destinationDir,
-  {
-    overwrite: true,
-    errorOnExist: true
-  },
-  (err) => {
-    if (err != null) {
-      console.error("Error copying files:", err);
-      return;
-    }
-
-    console.log("Installed unpacked extension successfully.");
-  }
-);
+try {
+  fs.copySync(sourceDirectory, destinationDir);
+  console.log("Extension copied successfully.");
+} catch (error) {
+  console.error("Error copying extension:", error);
+}
