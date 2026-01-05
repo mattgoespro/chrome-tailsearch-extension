@@ -2,6 +2,7 @@ import fs from "fs-extra";
 import path from "path";
 import os from "os";
 import packageJson from "../package.json";
+import tsconfig from "../tsconfig.json";
 
 const destinationDir = path.join(
   os.homedir(),
@@ -14,12 +15,13 @@ const destinationDir = path.join(
 );
 
 fs.ensureDirSync(destinationDir);
-const sourceDirectory = path.resolve(__dirname, "..", "out");
+
+const extensionDir = path.resolve(tsconfig.compilerOptions.outDir);
 
 console.log(`Copying unpacked extension -> ${destinationDir}`);
 
 try {
-  fs.copySync(sourceDirectory, destinationDir);
+  fs.copySync(extensionDir, destinationDir);
   console.log("Extension copied successfully.");
 } catch (error) {
   console.error("Error copying extension:", error);

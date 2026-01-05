@@ -11,9 +11,8 @@
   "scripts": {
     "dev": "webpack --config webpack.config.ts --mode development --watch",
     "build": "webpack --config webpack.config.ts --mode production",
-    "build-firefox": "tsx scripts/build-firefox.ts",
     "lint": "eslint",
-    "install-unpacked-extension": "tsx scripts/install-unpacked-extension.ts"
+    "unpack": "tsx scripts/unpack-for-chrome.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -26,25 +25,14 @@
     "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.28.5",
-    "@babel/plugin-transform-class-properties": "^7.27.1",
-    "@babel/plugin-transform-destructuring": "^7.28.5",
-    "@babel/plugin-transform-object-rest-spread": "^7.28.4",
-    "@babel/plugin-transform-runtime": "^7.28.5",
-    "@babel/preset-env": "^7.28.5",
-    "@babel/preset-react": "^7.28.5",
-    "@babel/preset-typescript": "^7.28.5",
     "@html-eslint/eslint-plugin": "^0.49.0",
     "@html-eslint/parser": "^0.49.0",
-    "@types/adm-zip": "^0.5.7",
-    "@types/babel-core": "^6.25.10",
     "@types/chrome": "^0.1.31",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.6",
     "@types/react-dom": "^19.2.3",
     "@types/webpack": "^5.28.5",
-    "adm-zip": "^0.5.16",
     "copy-webpack-plugin": "^13.0.1",
     "esbuild-loader": "^4.4.2",
     "eslint": "^9.39.1",
