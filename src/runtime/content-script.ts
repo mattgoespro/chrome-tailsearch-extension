@@ -17,7 +17,7 @@ document.addEventListener("mouseup", () => {
       if (chrome.runtime.lastError) {
         console.warn(
           "Content script failed to send message to background: ",
-          chrome.runtime.lastError
+          chrome.runtime.lastError.message
         );
         return;
       }
@@ -38,7 +38,7 @@ document.addEventListener("contextmenu", () => {
       source: "content-script",
       data: { selectedText }
     },
-    () => {
+    (a) => {
       if (chrome.runtime.lastError) {
         console.warn(
           "Content script failed to send message to background: ",

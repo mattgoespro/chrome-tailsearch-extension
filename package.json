@@ -13,11 +13,9 @@
     "build": "webpack --config webpack.config.ts --mode production",
     "build-firefox": "tsx scripts/build-firefox.ts",
     "lint": "eslint",
-    "install-unpacked-extension": "tsx scripts/install-unpacked-extension.ts",
-    "preinstall-unpacked-extension": "npm run build"
+    "install-unpacked-extension": "tsx scripts/install-unpacked-extension.ts"
   },
   "dependencies": {
-    "@babel/runtime": "^7.28.4",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^7.3.5",
@@ -47,10 +45,9 @@
     "@types/react-dom": "^19.2.3",
     "@types/webpack": "^5.28.5",
     "adm-zip": "^0.5.16",
-    "babel-loader": "^10.0.0",
     "copy-webpack-plugin": "^13.0.1",
+    "esbuild-loader": "^4.4.2",
     "eslint": "^9.39.1",
-    "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-react": "^7.37.5",
     "favicons": "^7.2.0",

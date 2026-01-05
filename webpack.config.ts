@@ -15,9 +15,9 @@ const ExtensionReloaderWebpackPlugin: typeof ExtensionReloader = require("webpac
 export default (_: unknown, env: { mode: Configuration["mode"] }) => {
   const { mode } = env;
 
-  if (initialStorageData == null) {
-    console.warn(
-      `Missing initial storage data in './initial-storage-data.json', default extension options won't be available.`
+  if (mode === "development" && initialStorageData == null) {
+    console.info(
+      `Initial storage data file './options.extension.json' not found, default TailSearch options won't be listed.`
     );
   }
 
@@ -30,7 +30,7 @@ export default (_: unknown, env: { mode: Configuration["mode"] }) => {
     target: "web",
     mode,
     stats: "errors-warnings",
-    devtool: mode === "development" ? "cheap-module-source-map" : false,
+    devtool: mode === "development" ? "eval-source-map" : false,
     entry: {
       background: path.join(runtimeDir, "background.ts"),
       "content-script": path.join(runtimeDir, "content-script.ts"),
@@ -50,9 +50,9 @@ export default (_: unknown, env: { mode: Configuration["mode"] }) => {
       rules: [
         {
           test: /\.[tj]sx?$/,
-          loader: "babel-loader",
+          loader: "esbuild-loader",
           include: srcDir,
-          exclude: /(node_modules)|(dist)/
+          exclude: /node_modules/
         }
       ]
     },
@@ -133,13 +133,40 @@ export default (_: unknown, env: { mode: Configuration["mode"] }) => {
             minimizer: [
               new TerserWebpackPlugin({
                 parallel: true,
-                extractComments: true,
+                extractComments: false,
                 terserOptions: {
                   compress: true
                 }
               })
             ],
-            splitChunks: {}
+            splitChunks: {
+              chunks: "all",
+              name: "vendors",
+              minSize: 0,
+              cacheGroups: {
+                default: false,
+                vendors: {
+                  test: /[\\/]node_modules[\\/]/,
+                  priority: -10,
+                  reuseExistingChunk: true
+                },
+                materialUI: {
+                  test: /[\\/]node_modules[\\/]@mui[\\/]/,
+                  name: "material-ui",
+                  priority: 20,
+                  reuseExistingChunk: true,
+                  enforce: true
+                },
+                shared: {
+                  name: "shared",
+                  test: /[\\/]src[\\/]shared[\\/]/,
+                  minChunks: 2,
+                  priority: 10,
+                  reuseExistingChunk: true,
+                  enforce: true
+                }
+              }
+            }
           }
         : undefined,
     performance:
